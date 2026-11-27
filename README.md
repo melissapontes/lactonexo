@@ -49,6 +49,8 @@ O administrador vê tudo. As regras de sincronização e conflito estão em [doc
 
 Histórico por animal, painel da propriedade e regras de apoio à decisão: [docs/painel-e-regras.md](docs/painel-e-regras.md).
 
+Laudo em PDF, envio ao produtor e planilhas: [docs/laudo-e-exportacoes.md](docs/laudo-e-exportacoes.md).
+
 ## Testes
 
 ```bash

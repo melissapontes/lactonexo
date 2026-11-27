@@ -6,6 +6,7 @@ import { rotuloAmostras } from '../../modules/mastite/dados';
 import { montarLaudo } from '../../modules/mastite/laudo';
 import { formatarPct, type Tabela } from '../../modules/mastite/tabelas';
 import { CabecalhoVisita } from './CabecalhoVisita';
+import { ExportarLaudo } from './ExportarLaudo';
 import './Resumo.css';
 
 function TabelaResumo({ titulo, tabela, italico = false, id }: { titulo: string; tabela: Tabela; italico?: boolean; id: string }) {
@@ -60,6 +61,8 @@ export function Resumo() {
           <div><dt>Data:</dt><dd>{formatarData(l.visita.data)}</dd></div>
         </dl>
       </section>
+
+      <ExportarLaudo laudo={l} />
 
       <p className="suave" data-testid="totais">
         {t.animais} animais · {t.tetos} tetos · {t.amostras} amostras de {t.animaisComAmostra} animais

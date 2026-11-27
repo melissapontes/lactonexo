@@ -6,15 +6,9 @@ import { TETOS } from '../modules/mastite/constantes';
 import { registrarConduta, type Sugestao } from '../modules/mastite/regras';
 import { salvar } from '../sync/mutacoes';
 import { formatarData } from '../lib/datas';
+import { NOME_CONDUTA } from '../modules/mastite/condutas';
 
-export const NOME_CONDUTA: Record<TipoConduta, string> = {
-  tratamento: 'Tratamento',
-  descarte_leite: 'Descarte de leite',
-  secagem: 'Secagem',
-  revisita: 'Revisita',
-  descarte_animal: 'Descarte do animal',
-  outro: 'Outro',
-};
+export { NOME_CONDUTA };
 
 export function descreverConduta(c: Conduta) {
   return [
