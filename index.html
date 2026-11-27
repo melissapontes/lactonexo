@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>%APP_NOME%</title>
+    <meta name="description" content="%APP_DESCRICAO%" />
+    <meta name="theme-color" content="%APP_COR_TEMA%" />
+    <meta name="application-name" content="%APP_NOME_CURTO%" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="%APP_NOME_CURTO%" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- SPLASH -->
+    <script>
+      // Aplica o tema antes de desenhar para evitar piscar. Preferência visual apenas (não é dado importante).
+      try {
+        var t = localStorage.getItem('lactonexo:tema');
+        if (t) document.documentElement.dataset.tema = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>O LactoNexo precisa de JavaScript ativado.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
