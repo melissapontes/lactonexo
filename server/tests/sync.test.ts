@@ -5,6 +5,8 @@ import { gerarHashSenha } from '../src/auth';
 import { criarApp } from '../src/app';
 import { migrar } from '../src/db';
 import { garantirCatalogoServidor } from '../src/catalogo';
+import { enviarAvisos, inscrever } from '../src/push';
+import { config } from '../src/config';
 import { idRegraPadrao } from '../../src/modules/mastite/regras-padrao';
 
 /**
@@ -210,6 +212,46 @@ d('sync no servidor', () => {
     expect(linhas).toEqual([{ status: 'conduta_registrada' }]);
   });
 
+  it('avisos por push: revisita, cultura de outra pessoa e laudo pendente; uma vez por usuário; inscrição morta sai', async () => {
+    const { animal, visita, va, ex } = await exameNovo();
+    const amostra = randomUUID();
+    await push(vetA, [
+      op('conduta', randomUUID(), { visita_animal_id: va, tipo: 'revisita', data_revisita: '2026-10-05' }, hlc(70)),
+      op('amostra', amostra, { visita_id: visita, numero_tubo: '1', tipo: 'teto' }, hlc(70)),
+      op('amostra_origem', randomUUID(), { amostra_id: amostra, exame_teto_id: ex }, hlc(70)),
+    ]);
+    // Resultado lançado pelo admin (laboratório): avisa os vets da propriedade.
+    await push(admin, [op('cultura', randomUUID(), { amostra_id: amostra, sem_crescimento: true, criado_em: new Date().toISOString() }, hlc(71, 'adm'))]);
+
+    const eps = { a1: `https://push.exemplo/a1-${randomUUID()}`, a2: `https://push.exemplo/a2-${randomUUID()}`, b: `https://push.exemplo/b-${randomUUID()}` };
+    await inscrever(db, vetA, { endpoint: eps.a1, keys: { p256dh: 'k', auth: 'a' } });
+    await inscrever(db, vetA, { endpoint: eps.a2, keys: { p256dh: 'k', auth: 'a' } });
+    await inscrever(db, vetB, { endpoint: eps.b, keys: { p256dh: 'k', auth: 'a' } });
+    await expect(inscrever(db, vetA, { endpoint: 'http://inseguro', keys: { p256dh: 'k', auth: 'a' } })).rejects.toThrow();
+
+    const enviadas: { endpoint: string; titulo: string; corpo: string; url: string }[] = [];
+    const enviar = async (i: { endpoint: string }, m: { titulo: string; corpo: string; url: string }) => {
+      if (i.endpoint === eps.a2) throw Object.assign(new Error('Gone'), { statusCode: 410 });
+      enviadas.push({ endpoint: i.endpoint, ...m });
+    };
+    await enviarAvisos(db, enviar, '2026-10-05');
+    const desta = (ep: string) => enviadas.filter((e) => e.endpoint === ep && (e.url.includes(visita) || e.url.includes(animal)));
+    expect(desta(eps.a1).map((e) => e.titulo).sort()).toEqual([
+      'LactoNexo: Laudo pendente de envio',
+      'LactoNexo: Resultado de cultura disponível',
+      'LactoNexo: Revisita hoje',
+    ]);
+    expect(desta(eps.a1).find((e) => e.titulo.includes('Revisita'))).toMatchObject({ corpo: '064 · Logradouro', url: `/animais/${animal}` });
+    expect(desta(eps.b)).toHaveLength(3);
+    // Inscrição que o navegador descartou (410) é removida.
+    expect((await db.query('select 1 from push_inscricao where endpoint = $1', [eps.a2])).rowCount).toBe(0);
+
+    // Segunda rodada: nada repete.
+    enviadas.length = 0;
+    await enviarAvisos(db, enviar, '2026-10-05');
+    expect(desta(eps.a1)).toEqual([]);
+  });
+
   describe('API HTTP', () => {
     type Tokens = { acesso: string; renovacao: string; usuario: { id: string; perfil: string } };
     const app = () => criarApp(db);
@@ -231,6 +273,25 @@ d('sync no servidor', () => {
       expect(n.status).toBe(200);
       const repetida = await app().request('/api/auth/renovar', json({ renovacao: t.renovacao }));
       expect(repetida.status).toBe(401);
+    });
+
+    it('rotas de push: sem chaves VAPID responde 503; com chaves, inscreve com login', async () => {
+      const t = (await (await app().request('/api/auth/entrar', json({ email: 'ana@teste.br', senha: 'senha-forte-123' }))).json()) as Tokens;
+      const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${t.acesso}` };
+      expect((await app().request('/api/push/chave')).status).toBe(401);
+      config.vapidPublica = '';
+      expect((await app().request('/api/push/chave', { headers: h })).status).toBe(503);
+      config.vapidPublica = 'BPublica';
+      config.vapidPrivada = 'privada';
+      expect(await (await app().request('/api/push/chave', { headers: h })).json()).toEqual({ chave: 'BPublica' });
+      const endpoint = `https://push.exemplo/${randomUUID()}`;
+      const r = await app().request('/api/push/inscrever', { method: 'POST', headers: h, body: JSON.stringify({ endpoint, keys: { p256dh: 'k', auth: 'a' } }) });
+      expect(r.status).toBe(200);
+      expect((await db.query('select usuario_id from push_inscricao where endpoint = $1', [endpoint])).rows[0].usuario_id).toBe(vetA);
+      await app().request('/api/push/cancelar', { method: 'POST', headers: h, body: JSON.stringify({ endpoint }) });
+      expect((await db.query('select 1 from push_inscricao where endpoint = $1', [endpoint])).rowCount).toBe(0);
+      config.vapidPublica = '';
+      config.vapidPrivada = '';
     });
 
     it('foto em partes: retoma de onde parou e parte repetida não duplica', async () => {

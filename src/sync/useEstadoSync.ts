@@ -3,16 +3,28 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import { ouvirMotor, type EstadoMotor } from './motor';
 
+/**
+ * Online/Offline. Além dos eventos, relê navigator.onLine ao voltar o foco e a cada poucos segundos:
+ * o Safari/WebKit às vezes não dispara "online" (ex.: página aberta sem rede pelo service worker),
+ * e a barra ficaria presa em "Offline".
+ */
 export function useOnline() {
   const [online, setOnline] = useState(() => navigator.onLine);
   useEffect(() => {
+    const conferir = () => setOnline(navigator.onLine);
     const on = () => setOnline(true);
     const off = () => setOnline(false);
     window.addEventListener('online', on);
     window.addEventListener('offline', off);
+    window.addEventListener('focus', conferir);
+    document.addEventListener('visibilitychange', conferir);
+    const t = setInterval(conferir, 3000);
     return () => {
       window.removeEventListener('online', on);
       window.removeEventListener('offline', off);
+      window.removeEventListener('focus', conferir);
+      document.removeEventListener('visibilitychange', conferir);
+      clearInterval(t);
     };
   }, []);
   return online;

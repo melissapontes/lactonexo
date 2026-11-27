@@ -14,6 +14,7 @@
     "server": "tsx server/src/main.ts",
     "server:dev": "tsx watch server/src/main.ts",
     "server:usuario": "tsx server/src/criar-usuario.ts",
+    "server:vapid": "tsx server/src/gerar-vapid.ts",
     "test:server": "vitest run --config server/vitest.config.ts",
     "build:e2e": "VITE_API_URL=http://localhost:8787 vite build --outDir dist-e2e"
   },
@@ -30,7 +31,8 @@
     "pg": "^8.13.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.28.0",
+    "web-push": "3.6.7"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
@@ -38,6 +40,7 @@
     "@types/pg": "^8.11.10",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/web-push": "3.6.4",
     "@vitejs/plugin-react": "^4.3.4",
     "fake-indexeddb": "^6.0.0",
     "jsdom": "^25.0.1",

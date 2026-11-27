@@ -5,6 +5,7 @@ import { sincronizar } from '../sync/motor';
 import { useEstadoSync } from '../sync/useEstadoSync';
 import { Logo } from './Logo';
 import { IndicadorSalvo } from './IndicadorSalvo';
+import { useAvisos } from '../pages/Avisos';
 import './BarraStatus.css';
 
 const DIA = 24 * 60 * 60 * 1000;
@@ -12,6 +13,7 @@ const DIA = 24 * 60 * 60 * 1000;
 /** Sempre visível no topo: Online/Offline, pendências, última sincronização e "Sincronizar agora". */
 export function BarraStatus() {
   const s = useEstadoSync();
+  const avisos = useAvisos();
   const pendenciaVelha = s.maisAntiga && Date.now() - new Date(s.maisAntiga).getTime() > APP.diasAlertaPendencias * DIA;
 
   let mensagem = '';
@@ -28,6 +30,10 @@ export function BarraStatus() {
           <span>{APP.nome}</span>
         </Link>
         <IndicadorSalvo />
+        <Link to="/avisos" className={`barra-avisos ${avisos?.length ? 'tem' : ''}`} data-testid="avisos" aria-label={avisos?.length ? `${avisos.length} avisos` : 'Avisos'}>
+          <span aria-hidden="true">🔔</span>
+          {avisos?.length ? <span className="contador">{avisos.length}</span> : null}
+        </Link>
         <span className={`barra-rede ${s.online ? 'on' : 'off'}`} role="status" data-testid="estado-rede">
           <span className="ponto" aria-hidden="true" />
           {s.online ? 'Online' : 'Offline'}

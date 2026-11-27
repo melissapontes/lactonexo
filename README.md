@@ -51,6 +51,8 @@ Histórico por animal, painel da propriedade e regras de apoio à decisão: [doc
 
 Laudo em PDF, envio ao produtor e planilhas: [docs/laudo-e-exportacoes.md](docs/laudo-e-exportacoes.md).
 
+Notificações (avisos no app e push no celular, inclusive iPhone): [docs/notificacoes.md](docs/notificacoes.md).
+
 ## Testes
 
 ```bash

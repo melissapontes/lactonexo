@@ -4,6 +4,7 @@ import { secureHeaders } from 'hono/secure-headers';
 import type pg from 'pg';
 import { entrar, renovar, sair, validarAcesso } from './auth';
 import { config } from './config';
+import { cancelar, inscrever, pushConfigurado, type Inscricao } from './push';
 
 type Vars = { Variables: { usuarioId: string } };
 
@@ -40,6 +41,26 @@ export function criarApp(db: pg.Pool) {
   // Daqui para baixo, exige token de acesso.
   app.use('/sync/*', exigirLogin);
   app.use('/fotos/*', exigirLogin);
+  app.use('/push/*', exigirLogin);
+
+  /** Chave pública VAPID para o aparelho se inscrever. 503 = push não configurado no servidor. */
+  app.get('/push/chave', (c) => (pushConfigurado() ? c.json({ chave: config.vapidPublica }) : c.json({ erro: 'Notificações não configuradas no servidor.' }, 503)));
+
+  app.post('/push/inscrever', async (c) => {
+    if (!pushConfigurado()) return c.json({ erro: 'Notificações não configuradas no servidor.' }, 503);
+    try {
+      await inscrever(db, c.get('usuarioId'), await c.req.json<Inscricao>());
+    } catch {
+      return c.json({ erro: 'Inscrição inválida.' }, 400);
+    }
+    return c.json({ ok: true });
+  });
+
+  app.post('/push/cancelar', async (c) => {
+    const { endpoint } = await c.req.json<{ endpoint?: string }>();
+    if (endpoint) await cancelar(db, c.get('usuarioId'), endpoint);
+    return c.json({ ok: true });
+  });
 
   app.post('/sync/push', async (c) => {
     const { ops } = await c.req.json<{ ops: unknown[] }>();
