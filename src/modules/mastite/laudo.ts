@@ -83,3 +83,5 @@ export async function montarLaudo(visita_id: string) {
     antibiogramas: await antibiogramasDaVisita(visita_id),
   };
 }
+
+export type Laudo = Awaited<ReturnType<typeof montarLaudo>>;

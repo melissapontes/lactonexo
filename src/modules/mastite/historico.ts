@@ -52,7 +52,7 @@ export interface HistoricoPropriedade {
   visitas: Pick<Visita, 'id' | 'data' | 'status'>[];
   animais: AnimalHist[];
   /** Tubos por visita, para o painel (um tubo de pool conta uma vez). */
-  tubos: { visita_id: string; amostra_id: string; agentes: string[]; semCrescimento: boolean }[];
+  tubos: { visita_id: string; amostra_id: string; numero_tubo: string; agentes: string[]; semCrescimento: boolean }[];
   antibiogramas: (AntibiogramaHist & { visita_id: string })[];
 }
 
@@ -156,6 +156,7 @@ export async function carregarHistorico(propriedade_id: string): Promise<Histori
     tubos: amostras.map((am) => ({
       visita_id: am.visita_id,
       amostra_id: am.id,
+      numero_tubo: am.numero_tubo,
       agentes: agentesTubo.get(am.id) ?? [],
       semCrescimento: semCrescTubo.has(am.id),
     })),

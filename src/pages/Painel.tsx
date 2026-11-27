@@ -9,6 +9,10 @@ import { agentesFrequentes, perfilResistencia, resumoPorVisita, type Proporcao }
 import { formatarPct } from '../modules/mastite/tabelas';
 import { Barras, GraficoPrevalencia } from '../components/Graficos';
 import { ListaSugestoes, useSugestoes } from '../components/Sugestoes';
+import { baixar } from '../lib/compartilhar';
+import { gerarCsv, gerarXlsx, nomeArquivo, TIPO_CSV, TIPO_XLSX } from '../lib/planilha';
+import { abasDaPropriedade } from '../modules/mastite/exportar';
+import { hojeISO } from '../modules/mastite/dados';
 
 const pct = (p: Proporcao) => formatarPct(Math.round(p.pct * 10) / 10);
 
@@ -158,6 +162,27 @@ export function Painel() {
           </section>
         </>
       )}
+
+      <section className="cartao" aria-labelledby="t-export">
+        <h2 id="t-export">Exportar histórico</h2>
+        <p className="suave" style={{ marginTop: 4 }}>Todas as visitas desta propriedade: exames por teto, antibiogramas, condutas e culturas.</p>
+        <div className="form-linha">
+          <button
+            type="button"
+            className="botao"
+            onClick={() => baixar(new Blob([gerarXlsx(abasDaPropriedade(h, p.nome))], { type: TIPO_XLSX }), nomeArquivo(['Historico', p.nome, hojeISO()], 'xlsx'))}
+          >
+            Excel
+          </button>
+          <button
+            type="button"
+            className="botao"
+            onClick={() => baixar(new Blob([gerarCsv(abasDaPropriedade(h, p.nome)[0].linhas)], { type: TIPO_CSV }), nomeArquivo(['Historico', p.nome, hojeISO()], 'csv'))}
+          >
+            CSV (exames por teto)
+          </button>
+        </div>
+      </section>
     </main>
   );
 }
