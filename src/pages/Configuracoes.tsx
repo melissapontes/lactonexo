@@ -5,6 +5,9 @@ import { db } from '../db/db';
 import { formatarBytes, lerArmazenamento, pedirPersistencia, type InfoArmazenamento } from '../lib/armazenamento';
 import { entregarArquivo, gerarBackup, nomeArquivoBackup, restaurarBackup, type ArquivoBackup } from '../lib/backup';
 import { formatarDataHora } from '../lib/datas';
+import { EditorCatalogo } from '../components/EditorCatalogo';
+import { carregarExemploLaudo, exemploJaCarregado } from '../modules/mastite/seed-laudo';
+import { useNavigate } from 'react-router-dom';
 
 type Tema = 'auto' | 'claro' | 'escuro' | 'contraste';
 
@@ -30,6 +33,8 @@ export function Configuracoes() {
   const [tema, setTema] = useState<Tema>(lerTema);
   const [arm, setArm] = useState<InfoArmazenamento | null>(null);
   const [msgBackup, setMsgBackup] = useState('');
+  const navegar = useNavigate();
+  const temExemplo = useLiveQuery(() => exemploJaCarregado(), [], true);
   const arquivoRef = useRef<HTMLInputElement>(null);
   const rejeitadas = useLiveQuery(() => db.fila_ops.where('status').equals('rejeitada').toArray(), [], []);
 
@@ -70,6 +75,23 @@ export function Configuracoes() {
           ))}
         </div>
       </section>
+
+      <section aria-labelledby="t-listas" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <h2 id="t-listas">Listas</h2>
+        <EditorCatalogo tipo="microrganismo" titulo="Microrganismos" />
+        <EditorCatalogo tipo="antibiotico" titulo="Antibióticos" />
+        <EditorCatalogo tipo="categoria" titulo="Categorias de animal" />
+      </section>
+
+      {!temExemplo && (
+        <section className="cartao">
+          <h2>Dados de exemplo</h2>
+          <p className="suave">Carrega o laudo NAPROSA/UFPB de 29/09/2026 (Logradouro, Queimadas-PB, 8 animais) para testar.</p>
+          <button type="button" className="botao" onClick={async () => navegar(`/visitas/${await carregarExemploLaudo()}/resumo`)}>
+            Carregar laudo de exemplo
+          </button>
+        </section>
+      )}
 
       <section className="cartao" aria-labelledby="t-arm">
         <h2 id="t-arm">Armazenamento no aparelho</h2>

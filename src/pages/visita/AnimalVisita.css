@@ -1,0 +1,64 @@
+/* Esquema dos 4 tetos: anteriores em cima, posteriores embaixo (AE AD / PE PD). */
+.tetos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.teto {
+  min-height: 92px;
+  border-radius: var(--raio);
+  border: 2px solid var(--cor-borda);
+  background: var(--cor-superficie);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.teto.ativo {
+  border-color: var(--cor-marca);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cor-marca) 30%, transparent);
+}
+.teto.alterado .teto-valores {
+  color: var(--cor-erro);
+  font-weight: 700;
+}
+.teto-nome {
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+.teto-valores {
+  display: flex;
+  gap: 12px;
+  font-size: 1rem;
+}
+.painel-teto {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.painel-teto h3 {
+  font-size: 1.1rem;
+}
+.rotulo-grupo {
+  margin: 8px 0 0;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.escolha-2 {
+  grid-template-columns: 1fr 1fr;
+}
+.escolha-cmt {
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (min-width: 720px) {
+  .escolha-cmt {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}

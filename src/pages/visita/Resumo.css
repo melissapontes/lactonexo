@@ -1,0 +1,76 @@
+.cabecalho-laudo p {
+  margin: 0 0 6px;
+}
+.cabecalho-laudo .marca {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--cor-marca);
+}
+.cabecalho-laudo dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px 16px;
+  margin: 8px 0 0;
+}
+.cabecalho-laudo dl div {
+  display: flex;
+  gap: 6px;
+}
+.cabecalho-laudo dt {
+  font-weight: 600;
+}
+.cabecalho-laudo dd {
+  margin: 0;
+}
+.laudo-animais {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  margin-top: 12px;
+}
+.laudo-animal h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.tabela-laudo {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.tabela-laudo th,
+.tabela-laudo td {
+  border-bottom: 1px solid var(--cor-borda);
+  padding: 6px 4px;
+  text-align: center;
+}
+.tabela-laudo th {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+.tabela-laudo td.resultado {
+  text-align: left;
+  font-style: italic;
+  font-weight: 600;
+}
+.nota {
+  font-size: 0.9rem;
+  color: var(--cor-texto-suave);
+}
+.titulo-tabela {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.tabelas-resumo {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.tabela-resp tr.total th,
+.tabela-resp tr.total td {
+  font-weight: 700;
+}
+.resistente {
+  color: var(--cor-erro);
+  font-weight: 700;
+}

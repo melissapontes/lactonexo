@@ -1,23 +1,27 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import { salvar } from '../sync/mutacoes';
 import { tituloPagina } from '../config/app';
-import './Inicio.css';
+import { carregarExemploLaudo } from '../modules/mastite/seed-laudo';
 
-const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
+export const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
 
 export function Inicio() {
   useEffect(() => {
     document.title = tituloPagina('Propriedades');
   }, []);
-  const propriedades = useLiveQuery(
-    () => db.propriedade.filter((p) => !p.excluido_em).sortBy('nome'),
-    [],
-  );
+  const navegar = useNavigate();
+  const propriedades = useLiveQuery(() => db.propriedade.filter((p) => !p.excluido_em).sortBy('nome'), []);
+  const contagens = useLiveQuery(async () => {
+    const m = new Map<string, number>();
+    for (const a of await db.animal.filter((x) => !x.excluido_em).toArray()) m.set(a.propriedade_id, (m.get(a.propriedade_id) ?? 0) + 1);
+    return m;
+  }, []);
   const [abrirForm, setAbrirForm] = useState(false);
   const [salvo, setSalvo] = useState('');
+  const [carregando, setCarregando] = useState(false);
 
   async function aoEnviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,14 +43,14 @@ export function Inicio() {
 
   return (
     <main className="conteudo">
-      <div className="inicio-topo">
+      <div className="topo-pagina">
         <h1>Propriedades</h1>
         <button type="button" className="botao botao-primario" onClick={() => setAbrirForm((v) => !v)} aria-expanded={abrirForm}>
           {abrirForm ? 'Cancelar' : 'Nova propriedade'}
         </button>
       </div>
       <p className="visualmente-oculto" role="status">{salvo}</p>
-      {salvo && !abrirForm && <p className="suave salvo-ok">✓ {salvo}</p>}
+      {salvo && !abrirForm && <p className="suave" style={{ margin: 0, color: 'var(--cor-ok)' }}>✓ {salvo}</p>}
 
       {abrirForm && (
         <form className="cartao form" onSubmit={aoEnviar} aria-label="Nova propriedade">
@@ -63,11 +67,11 @@ export function Inicio() {
             <input name="proprietario_telefone" type="tel" inputMode="tel" autoComplete="off" />
           </label>
           <div className="form-linha">
-            <label className="cresce">
+            <label style={{ flex: '3 1 160px' }}>
               Município
               <input name="municipio" autoComplete="off" />
             </label>
-            <label>
+            <label style={{ flex: '1 1 80px' }}>
               UF
               <select name="uf" defaultValue="PB">
                 {UFS.map((u) => (
@@ -85,26 +89,38 @@ export function Inicio() {
       {propriedades && propriedades.length === 0 && !abrirForm && (
         <div className="cartao">
           <p style={{ marginTop: 0 }}>Nenhuma propriedade neste aparelho ainda.</p>
-          <p className="suave" style={{ marginBottom: 0 }}>
-            O cadastro completo (animais, visitas e laudo) chega na próxima etapa. Tudo o que você salvar aqui funciona
-            sem internet e entra na fila de sincronização.
-          </p>
+          <p className="suave">Para conhecer o app, carregue o laudo de exemplo (NAPROSA/UFPB, 8 animais, 29/09/2026).</p>
+          <button
+            type="button"
+            className="botao"
+            disabled={carregando}
+            onClick={async () => {
+              setCarregando(true);
+              const v = await carregarExemploLaudo();
+              navegar(`/visitas/${v}/resumo`);
+            }}
+          >
+            {carregando ? 'Carregando…' : 'Carregar laudo de exemplo'}
+          </button>
         </div>
       )}
 
       <ul className="lista-cartoes" aria-label="Propriedades">
         {propriedades?.map((p) => (
           <li key={p.id} className="cartao">
-            <strong>{p.nome}</strong>
-            <span className="suave">
-              {[p.proprietario_nome, [p.municipio, p.uf].filter(Boolean).join('-')].filter(Boolean).join(' · ') || '—'}
-            </span>
+            <Link to={`/propriedades/${p.id}`} className="cartao-link">
+              <strong>{p.nome}</strong>
+              <span className="suave">
+                {[p.proprietario_nome, [p.municipio, p.uf].filter(Boolean).join('-')].filter(Boolean).join(' · ') || '—'}
+              </span>
+              <span className="suave">{contagens?.get(p.id) ?? 0} animais</span>
+            </Link>
           </li>
         ))}
       </ul>
 
       <p className="suave" style={{ marginTop: 'auto' }}>
-        <Link to="/configuracoes">Configurações, armazenamento e backup</Link>
+        <Link to="/configuracoes">Configurações, listas, armazenamento e backup</Link>
       </p>
     </main>
   );

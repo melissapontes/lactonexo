@@ -145,6 +145,8 @@ export interface Amostra extends Registro {
   numero_tubo: string;
   tipo: 'teto' | 'composto';
   data_coleta?: string;
+  /** Linha do laudo (1 a 4) onde o tubo aparece impresso. Opcional; usado para reproduzir laudos existentes. */
+  linha_laudo?: number;
 }
 
 export interface AmostraOrigem extends Registro {
