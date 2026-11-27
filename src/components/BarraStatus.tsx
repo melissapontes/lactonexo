@@ -4,6 +4,7 @@ import { formatarDataHora } from '../lib/datas';
 import { sincronizar } from '../sync/motor';
 import { useEstadoSync } from '../sync/useEstadoSync';
 import { Logo } from './Logo';
+import { IndicadorSalvo } from './IndicadorSalvo';
 import './BarraStatus.css';
 
 const DIA = 24 * 60 * 60 * 1000;
@@ -25,6 +26,7 @@ export function BarraStatus() {
           <Logo tamanho={28} />
           <span>{APP.nome}</span>
         </Link>
+        <IndicadorSalvo />
         <span className={`barra-rede ${s.online ? 'on' : 'off'}`} role="status" data-testid="estado-rede">
           <span className="ponto" aria-hidden="true" />
           {s.online ? 'Online' : 'Offline'}

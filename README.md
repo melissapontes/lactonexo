@@ -11,8 +11,8 @@ O nome, as cores e o logo ficam em um único lugar: `src/config/app.ts` e `publi
 | Etapa | Conteúdo | Situação |
 | --- | --- | --- |
 | a | Esqueleto PWA instalável e offline | feita |
-| b | Cadastro e visita com preenchimento do laudo | próxima |
-| c | Sincronização com servidor e conflitos | |
+| b | Cadastro e visita com preenchimento do laudo | feita |
+| c | Sincronização com servidor e conflitos | próxima |
 | d | Histórico, painel e regras de decisão | |
 | e | Laudo em PDF e exportações | |
 | f | Notificações push | |
@@ -69,4 +69,20 @@ Proposta aprovada: [LactoNexo — Proposta de arquitetura](https://claude.ai/art
 - `src/sync/` fila de operações (outbox), relógio HLC, motor de sync e a interface `SyncTransport`
   (trocar de servidor, por exemplo para o Supabase, é implementar essa interface).
 - `src/sw.ts` service worker: pré-cache do app shell, fallback de navegação offline, push.
-- `src/components/` barra de status, onboarding de instalação, aviso de nova versão.
+- `src/components/` barra de status, onboarding de instalação, aviso de nova versão, campos com salvamento automático.
+- `src/modules/mastite/` módulo de mastite: constantes (tetos, graus de CMT), listas padrão, cálculo das Tabelas 1 a 3,
+  montagem do laudo e o laudo de exemplo (`seed-laudo.ts`).
+- `src/pages/` telas. A visita tem três abas: Animais (tetos), Laboratório (cultura e antibiograma) e Resumo (laudo).
+
+## Dados de exemplo
+
+Só para testes: em Configurações → Dados de teste, "Carregar laudo de exemplo" carrega o laudo NAPROSA/UFPB de 29/09/2026
+(Logradouro, Queimadas-PB, 8 animais, 32 tetos, 11 tubos), exatamente como impresso. Os nomes nunca são corrigidos
+pelo sistema (inclusive "Streptococcus aureus" no antibiograma).
+
+As Tabelas 1 a 3 são calculadas a partir dos dados. Por isso, com o laudo de exemplo, a Tabela 2 mostra 25 negativos
+e 0 Traços (o laudo impresso diz 24 e 1), e a Tabela 3 mostra 11 amostras de 6 animais com "Staphylococcus spp." 2
+(o impresso diz 8 amostras de 2 animais e "Streptococcus spp." 2).
+
+As listas padrão (microrganismos, antibióticos, categorias) têm ids fixos, iguais em todo aparelho, e não entram na
+fila de sincronização. O servidor (etapa c) deve criar os mesmos ids.

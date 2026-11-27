@@ -107,6 +107,10 @@ export async function salvar(
       await db.fila_ops.add(op);
     }
     return id;
+  }).then((id) => {
+    // Confirmação visual discreta ("Salvo no aparelho").
+    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('lactonexo:salvo'));
+    return id;
   });
 }
 

@@ -67,3 +67,17 @@ describe('fila de operações (outbox)', () => {
     expect(a.hlc < b.hlc).toBe(true);
   });
 });
+
+describe('catálogo padrão', () => {
+  it('é igual em qualquer aparelho e não entra na fila', async () => {
+    const { garantirCatalogo, itensCatalogo } = await import('../../src/modules/mastite/dados');
+    await bancoNovo();
+    await garantirCatalogo();
+    const a = (await itensCatalogo('antibiotico')).map((i) => i.id);
+    expect(await db.fila_ops.count()).toBe(0);
+    await bancoNovo();
+    await garantirCatalogo();
+    expect((await itensCatalogo('antibiotico')).map((i) => i.id)).toEqual(a);
+    expect(a[0]).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  });
+});
