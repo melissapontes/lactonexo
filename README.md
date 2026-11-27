@@ -76,7 +76,7 @@ Proposta aprovada: [LactoNexo — Proposta de arquitetura](https://claude.ai/art
 
 ## Dados de exemplo
 
-Na tela inicial vazia, ou em Configurações, "Carregar laudo de exemplo" carrega o laudo NAPROSA/UFPB de 29/09/2026
+Só para testes: em Configurações → Dados de teste, "Carregar laudo de exemplo" carrega o laudo NAPROSA/UFPB de 29/09/2026
 (Logradouro, Queimadas-PB, 8 animais, 32 tetos, 11 tubos), exatamente como impresso. Os nomes nunca são corrigidos
 pelo sistema (inclusive "Streptococcus aureus" no antibiograma).
 

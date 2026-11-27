@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import { salvar } from '../sync/mutacoes';
 import { tituloPagina } from '../config/app';
-import { carregarExemploLaudo } from '../modules/mastite/seed-laudo';
 
 export const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
 
@@ -12,7 +11,6 @@ export function Inicio() {
   useEffect(() => {
     document.title = tituloPagina('Propriedades');
   }, []);
-  const navegar = useNavigate();
   const propriedades = useLiveQuery(() => db.propriedade.filter((p) => !p.excluido_em).sortBy('nome'), []);
   const contagens = useLiveQuery(async () => {
     const m = new Map<string, number>();
@@ -21,7 +19,6 @@ export function Inicio() {
   }, []);
   const [abrirForm, setAbrirForm] = useState(false);
   const [salvo, setSalvo] = useState('');
-  const [carregando, setCarregando] = useState(false);
 
   async function aoEnviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -89,19 +86,10 @@ export function Inicio() {
       {propriedades && propriedades.length === 0 && !abrirForm && (
         <div className="cartao">
           <p style={{ marginTop: 0 }}>Nenhuma propriedade neste aparelho ainda.</p>
-          <p className="suave">Para conhecer o app, carregue o laudo de exemplo (NAPROSA/UFPB, 8 animais, 29/09/2026).</p>
-          <button
-            type="button"
-            className="botao"
-            disabled={carregando}
-            onClick={async () => {
-              setCarregando(true);
-              const v = await carregarExemploLaudo();
-              navegar(`/visitas/${v}/resumo`);
-            }}
-          >
-            {carregando ? 'Carregando…' : 'Carregar laudo de exemplo'}
-          </button>
+          <p className="suave" style={{ marginBottom: 0 }}>
+            Toque em <strong>Nova propriedade</strong> para começar. Depois cadastre os animais e abra uma visita para
+            preencher o laudo. Tudo funciona sem internet.
+          </p>
         </div>
       )}
 

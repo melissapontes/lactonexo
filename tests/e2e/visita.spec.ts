@@ -66,7 +66,7 @@ test('visita preenchida sem internet sobrevive a fechar e reabrir o app', async 
 });
 
 test('laudo de exemplo reproduz as Tabelas 1 a 3', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/configuracoes');
   await page.getByRole('button', { name: 'Carregar laudo de exemplo' }).click();
   await expect(page.getByTestId('totais')).toHaveText('8 animais · 32 tetos · 11 amostras de 6 animais');
   await expect(page.getByTestId('tabela-1').getByRole('row', { name: /NEGATIVO/ })).toContainText('93,75%');

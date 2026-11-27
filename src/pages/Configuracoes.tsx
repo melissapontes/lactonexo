@@ -85,8 +85,11 @@ export function Configuracoes() {
 
       {!temExemplo && (
         <section className="cartao">
-          <h2>Dados de exemplo</h2>
-          <p className="suave">Carrega o laudo NAPROSA/UFPB de 29/09/2026 (Logradouro, Queimadas-PB, 8 animais) para testar.</p>
+          <h2>Dados de teste</h2>
+          <p className="suave">
+            Só para testar o app: cria uma propriedade de exemplo com a visita do laudo NAPROSA/UFPB de 29/09/2026
+            (8 animais). Não muda nenhum campo nem lista; as visitas reais são preenchidas normalmente.
+          </p>
           <button type="button" className="botao" onClick={async () => navegar(`/visitas/${await carregarExemploLaudo()}/resumo`)}>
             Carregar laudo de exemplo
           </button>
