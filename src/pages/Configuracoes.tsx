@@ -7,6 +7,7 @@ import { entregarArquivo, gerarBackup, nomeArquivoBackup, restaurarBackup, type 
 import { formatarDataHora } from '../lib/datas';
 import { EditorCatalogo } from '../components/EditorCatalogo';
 import { EditorRegras } from '../components/EditorRegras';
+import { ConfigNotificacoes } from '../components/ConfigNotificacoes';
 import { carregarExemploLaudo, exemploJaCarregado } from '../modules/mastite/seed-laudo';
 import { useNavigate } from 'react-router-dom';
 import { API_URL, sair } from '../sync/sessao';
@@ -107,6 +108,8 @@ export function Configuracoes() {
         <EditorCatalogo tipo="antibiotico" titulo="Antibióticos" />
         <EditorCatalogo tipo="categoria" titulo="Categorias de animal" />
       </section>
+
+      <ConfigNotificacoes />
 
       <EditorRegras editavel={!API_URL || sessao?.usuario.perfil === 'admin'} />
 

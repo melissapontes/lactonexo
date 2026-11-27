@@ -78,3 +78,23 @@
   color: var(--cor-erro);
   font-weight: 600;
 }
+
+.barra-avisos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 44px;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--cor-texto);
+  font-size: 1.1rem;
+}
+.barra-avisos .contador {
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--cor-erro);
+  color: #fff;
+  border-radius: 999px;
+  padding: 1px 6px;
+}

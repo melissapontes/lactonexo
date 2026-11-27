@@ -17,6 +17,7 @@ import { garantirCatalogo } from './modules/mastite/dados';
 import { Entrar } from './pages/Entrar';
 import { Conflitos } from './pages/Conflitos';
 import { Painel } from './pages/Painel';
+import { Avisos } from './pages/Avisos';
 import { garantirRegras } from './modules/mastite/regras';
 import { API_URL } from './sync/sessao';
 import { transporteHttp } from './sync/http';
@@ -59,6 +60,7 @@ export function App() {
           <Route path="/visitas/:id/animal/:va" element={<AnimalVisita />} />
           <Route path="/visitas/:id/laboratorio" element={<Laboratorio />} />
           <Route path="/visitas/:id/resumo" element={<Resumo />} />
+          <Route path="/avisos" element={<Avisos />} />
           <Route path="/conflitos" element={<Conflitos />} />
           <Route path="*" element={<Inicio />} />
         </Routes>

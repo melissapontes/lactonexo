@@ -40,3 +40,15 @@ Use um iPhone real com iOS 16.4 ou mais novo. Anote modelo, versão do iOS e dat
 ## 7. Atualização do app
 - [ ] Publicar uma versão nova, abrir o app instalado: aparece "Nova versão do LactoNexo disponível".
 - [ ] Tocar em "Atualizar": o app recarrega e as alterações pendentes continuam lá.
+
+## 8. Laudo em PDF
+- [ ] Resumo da visita → "Enviar laudo (PDF)" abre o menu de compartilhar do iOS com o PDF; enviar pelo WhatsApp chega como documento.
+- [ ] Em modo avião, "Baixar PDF" ainda gera o arquivo.
+- [ ] O PDF abre no app Arquivos com o logo, a tabela por animal e os antibiogramas.
+
+## 9. Notificações (iOS 16.4 ou mais novo, app instalado)
+- [ ] No Safari sem instalar, Configurações → Notificações explica que é preciso instalar.
+- [ ] No app instalado, "Ativar notificações" pede permissão só depois do toque; aceitar mostra "Notificações ativas".
+- [ ] Marcar uma conduta de revisita para amanhã: o sino mostra o aviso na hora; a notificação chega no celular na próxima rodada do servidor (até 15 min), com o app fechado.
+- [ ] Tocar na notificação abre o LactoNexo direto no animal.
+- [ ] Negar a permissão: o app mostra como liberar em Ajustes e os avisos continuam no sino.

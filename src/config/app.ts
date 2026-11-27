@@ -19,6 +19,10 @@ export const APP = {
   diasAlertaPendencias: 3,
   /** Intervalo de sincronização automática com o app aberto (ms). */
   intervaloSyncMs: 2 * 60 * 1000,
+  /** Dias depois da visita para avisar que o laudo ainda não foi enviado. */
+  diasLaudoPendente: 2,
+  /** Avisar a revisita com esta antecedência (dias). */
+  diasAntecedenciaRevisita: 1,
 } as const;
 
 export const tituloPagina = (pagina?: string) => (pagina ? `${pagina} · ${APP.nome}` : APP.nome);

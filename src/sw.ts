@@ -29,7 +29,7 @@ self.addEventListener('message', (e) => {
   if (e.data?.type === 'SKIP_WAITING') void self.skipWaiting();
 });
 
-// Push (Web Push/VAPID). Implementação completa na etapa (f).
+// Push (Web Push/VAPID): avisos de revisita, cultura disponível e laudo pendente. Título já vem com o nome do app.
 self.addEventListener('push', (e) => {
   const dados = (() => {
     try {
@@ -37,13 +37,15 @@ self.addEventListener('push', (e) => {
     } catch {
       return { corpo: e.data?.text() };
     }
-  })() as { titulo?: string; corpo?: string; url?: string };
+  })() as { titulo?: string; corpo?: string; url?: string; tag?: string };
   e.waitUntil(
     self.registration.showNotification(dados.titulo ?? APP.nome, {
       body: dados.corpo ?? '',
       icon: '/icons/icon-192.png',
       badge: '/icons/icon-96.png',
       data: { url: dados.url ?? '/' },
+      tag: dados.tag,
+      lang: APP.idioma,
     }),
   );
 });

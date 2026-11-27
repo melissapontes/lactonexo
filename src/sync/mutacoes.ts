@@ -9,6 +9,9 @@ let relogio: Hlc | null = null;
 let usuarioAtual = 'local';
 let organizacaoAtual = 'local';
 
+/** Usuário da sessão atual ('local' sem servidor). */
+export const usuarioDaSessao = () => usuarioAtual;
+
 export function definirSessao(usuarioId: string, organizacaoId: string) {
   usuarioAtual = usuarioId;
   organizacaoAtual = organizacaoId;
