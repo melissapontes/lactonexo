@@ -16,6 +16,8 @@ import { Resumo } from './pages/visita/Resumo';
 import { garantirCatalogo } from './modules/mastite/dados';
 import { Entrar } from './pages/Entrar';
 import { Conflitos } from './pages/Conflitos';
+import { Painel } from './pages/Painel';
+import { garantirRegras } from './modules/mastite/regras';
 import { API_URL } from './sync/sessao';
 import { transporteHttp } from './sync/http';
 import { configurarTransporte } from './sync/transporte';
@@ -27,6 +29,7 @@ export function App() {
   useEffect(() => {
     void pedirPersistencia();
     void garantirCatalogo();
+    void garantirRegras();
     return iniciarGatilhos();
   }, []);
   useEffect(() => {
@@ -50,6 +53,7 @@ export function App() {
           <Route path="/" element={<Inicio />} />
           <Route path="/configuracoes" element={<Configuracoes />} />
           <Route path="/propriedades/:id" element={<Propriedade />} />
+          <Route path="/propriedades/:id/painel" element={<Painel />} />
           <Route path="/animais/:id" element={<Animal />} />
           <Route path="/visitas/:id" element={<Visita />} />
           <Route path="/visitas/:id/animal/:va" element={<AnimalVisita />} />

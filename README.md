@@ -47,6 +47,8 @@ Variáveis do servidor: `DATABASE_URL`, `JWT_SEGREDO` (obrigatória em produçã
 Cada vet só vê as propriedades atribuídas a ele (tabela `atribuicao`); quem cria uma propriedade ganha acesso a ela.
 O administrador vê tudo. As regras de sincronização e conflito estão em [docs/sync.md](docs/sync.md).
 
+Histórico por animal, painel da propriedade e regras de apoio à decisão: [docs/painel-e-regras.md](docs/painel-e-regras.md).
+
 ## Testes
 
 ```bash

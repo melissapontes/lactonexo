@@ -4,6 +4,8 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { gerarHashSenha } from '../src/auth';
 import { criarApp } from '../src/app';
 import { migrar } from '../src/db';
+import { garantirCatalogoServidor } from '../src/catalogo';
+import { idRegraPadrao } from '../../src/modules/mastite/regras-padrao';
 
 /**
  * Testes do servidor contra um PostgreSQL real.
@@ -184,6 +186,28 @@ d('sync no servidor', () => {
     const tabelas = new Set(p.mudancas.map((m: { tabela: string }) => m.tabela));
     expect([...tabelas]).toEqual(expect.arrayContaining(['propriedade', 'animal', 'visita', 'visita_animal', 'exame_teto']));
     expect(tabelas.has('usuario')).toBe(false);
+  });
+
+  it('regras padrão têm os mesmos ids do app; só admin altera; vet grava a resposta à sugestão', async () => {
+    await garantirCatalogoServidor(db, org);
+    const idRegra = idRegraPadrao('cmt_consecutivo');
+    expect((await db.query('select tipo, parametros from regra where id = $1', [idRegra])).rows[0]).toEqual({
+      tipo: 'cmt_consecutivo',
+      parametros: { grau_minimo: '++', visitas: 2 },
+    });
+    const negado = await push(vetA, [op('regra', idRegra, { ativa: false }, hlc(50), 1)]);
+    expect(negado.rejeitadas).toHaveLength(1);
+    const ok = await push(admin, [op('regra', idRegra, { parametros: { grau_minimo: '+++', visitas: 3 } }, hlc(51, 'adm'), 1)]);
+    expect(ok.rejeitadas).toEqual([]);
+
+    const { animal, visita } = await exameNovo();
+    const alerta = randomUUID();
+    const campos = { regra_id: idRegra, animal_id: animal, visita_id: visita, mensagem: 'Teto AE', status: 'dispensado' };
+    // Os dois vets respondem a mesma sugestão offline (mesmo id): não duplica.
+    expect((await push(vetA, [op('alerta', alerta, campos, hlc(60))])).rejeitadas).toEqual([]);
+    expect((await push(vetB, [op('alerta', alerta, { ...campos, status: 'conduta_registrada' }, hlc(61, 'b'))])).rejeitadas).toEqual([]);
+    const linhas = (await db.query('select status from alerta where id = $1', [alerta])).rows;
+    expect(linhas).toEqual([{ status: 'conduta_registrada' }]);
   });
 
   describe('API HTTP', () => {

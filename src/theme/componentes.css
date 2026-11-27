@@ -217,3 +217,62 @@ a.botao-primario {
   border-radius: 8px;
   border: 1px solid var(--cor-borda);
 }
+
+.lista-simples {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.pares {
+  margin: 8px 0 0;
+  display: grid;
+  gap: 8px;
+}
+.pares div {
+  display: grid;
+  grid-template-columns: minmax(110px, 30%) 1fr;
+  gap: 8px;
+}
+.pares dt {
+  color: var(--cor-texto-suave);
+}
+.pares dd {
+  margin: 0;
+}
+.linha-tempo {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+.linha-tempo > li {
+  border-left: 3px solid var(--cor-borda);
+  padding-left: 12px;
+}
+.linha-tempo h3 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+}
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.numero {
+  background: var(--cor-superficie-2);
+  border-radius: var(--raio);
+  padding: 12px;
+}
+.numero strong {
+  display: block;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+.numero span {
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+}
