@@ -7,6 +7,7 @@ import { Escolha } from '../../components/Campos';
 import { GRAUS_CMT, IMPRESSO_CMT, IMPRESSO_TAMIS, NOME_TETO, TETOS } from '../../modules/mastite/constantes';
 import { registrarTubo } from '../../modules/mastite/dados';
 import { salvar } from '../../sync/mutacoes';
+import { FotosDo } from '../../components/Fotos';
 import { CabecalhoVisita } from './CabecalhoVisita';
 import './AnimalVisita.css';
 
@@ -143,6 +144,9 @@ export function AnimalVisita() {
           </button>
         </div>
         {avisoTubo && <p className="aviso aviso-alerta" role="alert">{avisoTubo}</p>}
+
+        <p className="rotulo-grupo">Fotos do teto</p>
+        <FotosDo tabela="exame_teto" id={atual.id} />
         {compostos.length > 0 && <p className="suave">Composto: {compostos.map((c) => `tubo ${c.numero_tubo}`).join(', ')}</p>}
       </section>
 

@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "types": ["node"], "lib": ["ES2022"], "module": "ESNext", "moduleResolution": "bundler", "noEmit": true },
+  "include": ["src", "tests", "../src/lib/uuid.ts", "../src/modules/mastite/constantes.ts"]
+}

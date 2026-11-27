@@ -7,6 +7,18 @@ on:
 jobs:
   testes:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lactonexo_e2e
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL_TESTE: postgres://postgres:postgres@localhost:5432/postgres
+      E2E_DATABASE_URL: postgres://postgres:postgres@localhost:5432/lactonexo_e2e
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,9 +27,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - run: npx tsc -p server/tsconfig.json
       - run: npm test
+      - name: Testes do servidor (PostgreSQL real)
+        run: npm run test:server
       - run: npm run build
+      - run: npm run build:e2e
       - name: Instalar WebKit (motor do Safari) e Chromium
         run: npx playwright install --with-deps webkit chromium
-      - name: E2E offline (WebKit e Chromium)
+      - name: E2E (offline, visita e dois vets com servidor) em WebKit e Chromium
         run: npx playwright test --trace off

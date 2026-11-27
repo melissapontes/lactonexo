@@ -5,9 +5,14 @@ import { tituloPagina } from '../config/app';
 import { db } from '../db/db';
 import { CampoAuto } from '../components/Campos';
 import { formatarData } from '../lib/datas';
+import { lerMeta } from '../db/db';
 import { criarVisita, garantirCatalogo, hojeISO, itensCatalogo } from '../modules/mastite/dados';
 import { salvar } from '../sync/mutacoes';
 import { UFS } from './Inicio';
+import { API_URL } from '../sync/sessao';
+import { baixarPropriedade } from '../sync/motor';
+import { formatarDataHora } from '../lib/datas';
+import { useOnline } from '../sync/useEstadoSync';
 
 const STATUS: Record<string, string> = {
   em_campo: 'Em campo',
@@ -36,6 +41,9 @@ export function Propriedade() {
   const [dataVisita, setDataVisita] = useState(hojeISO());
   const [aviso, setAviso] = useState('');
   const [editar, setEditar] = useState(false);
+  const online = useOnline();
+  const baixadoEm = useLiveQuery(() => lerMeta<string>(`baixado:${id}`), [id]);
+  const [baixando, setBaixando] = useState('');
 
   useEffect(() => {
     if (p) document.title = tituloPagina(p.nome);
@@ -75,6 +83,33 @@ export function Propriedade() {
           {editar ? 'Fechar dados' : 'Editar dados'}
         </button>
       </div>
+
+      {API_URL && (
+        <section className="cartao" aria-label="Uso offline">
+          <div className="topo-pagina">
+            <span data-testid="baixado">
+              {baixadoEm ? `✓ Pronta para uso offline (baixada em ${formatarDataHora(baixadoEm)})` : 'Ainda não baixada para uso offline.'}
+            </span>
+            <button
+              type="button"
+              className="botao"
+              disabled={!online || baixando === '…'}
+              onClick={async () => {
+                setBaixando('…');
+                try {
+                  const n = await baixarPropriedade(id);
+                  setBaixando(`${n} registros atualizados.`);
+                } catch (e) {
+                  setBaixando(e instanceof Error ? e.message : 'Falha ao baixar.');
+                }
+              }}
+            >
+              {baixando === '…' ? 'Baixando…' : 'Baixar para visita'}
+            </button>
+          </div>
+          {baixando && baixando !== '…' && <p className="suave" role="status" style={{ margin: '8px 0 0' }}>{baixando}</p>}
+        </section>
+      )}
 
       {editar && (
         <section className="cartao grade-campos" aria-label="Dados da propriedade">

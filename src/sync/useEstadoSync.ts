@@ -27,6 +27,7 @@ export function useEstadoSync() {
     [],
     null,
   );
+  const conflitos = useLiveQuery(() => db.conflito.filter((c) => c.status === 'pendente' && !c.excluido_em).count(), [], 0);
   const ultimaSync = useLiveQuery(() => db.meta.get('ultima_sync').then((m) => (m?.valor as string) ?? null), [], null);
   const [motor, setMotor] = useState<EstadoMotor>({ sincronizando: false, ultimoResultado: null });
   useEffect(() => {
@@ -35,5 +36,5 @@ export function useEstadoSync() {
       parar();
     };
   }, []);
-  return { online, pendentes, rejeitadas, maisAntiga, ultimaSync, ...motor };
+  return { online, pendentes, rejeitadas, maisAntiga, ultimaSync, conflitos, ...motor };
 }

@@ -14,17 +14,36 @@ import { AnimalVisita } from './pages/visita/AnimalVisita';
 import { Laboratorio } from './pages/visita/Laboratorio';
 import { Resumo } from './pages/visita/Resumo';
 import { garantirCatalogo } from './modules/mastite/dados';
+import { Entrar } from './pages/Entrar';
+import { Conflitos } from './pages/Conflitos';
+import { API_URL } from './sync/sessao';
+import { transporteHttp } from './sync/http';
+import { configurarTransporte } from './sync/transporte';
+import { sincronizar } from './sync/motor';
+import { useSessao } from './sync/useSessao';
 
 export function App() {
+  const sessao = useSessao();
   useEffect(() => {
     void pedirPersistencia();
     void garantirCatalogo();
     return iniciarGatilhos();
   }, []);
+  useEffect(() => {
+    // Com servidor configurado, sincroniza só com sessão; sem servidor, o app funciona só no aparelho.
+    configurarTransporte(API_URL && sessao ? transporteHttp : null);
+    if (API_URL && sessao) void sincronizar();
+  }, [sessao]);
+
+  if (API_URL && sessao === undefined) return null;
 
   return (
     <BrowserRouter>
       <Onboarding>
+        {API_URL && !sessao ? (
+          <Entrar />
+        ) : (
+          <>
         <BarraStatus />
         <AvisoAtualizacao />
         <Routes>
@@ -36,8 +55,11 @@ export function App() {
           <Route path="/visitas/:id/animal/:va" element={<AnimalVisita />} />
           <Route path="/visitas/:id/laboratorio" element={<Laboratorio />} />
           <Route path="/visitas/:id/resumo" element={<Resumo />} />
+          <Route path="/conflitos" element={<Conflitos />} />
           <Route path="*" element={<Inicio />} />
         </Routes>
+          </>
+        )}
       </Onboarding>
     </BrowserRouter>
   );

@@ -8,6 +8,8 @@ import { formatarDataHora } from '../lib/datas';
 import { EditorCatalogo } from '../components/EditorCatalogo';
 import { carregarExemploLaudo, exemploJaCarregado } from '../modules/mastite/seed-laudo';
 import { useNavigate } from 'react-router-dom';
+import { API_URL, sair } from '../sync/sessao';
+import { useSessao } from '../sync/useSessao';
 
 type Tema = 'auto' | 'claro' | 'escuro' | 'contraste';
 
@@ -34,6 +36,8 @@ export function Configuracoes() {
   const [arm, setArm] = useState<InfoArmazenamento | null>(null);
   const [msgBackup, setMsgBackup] = useState('');
   const navegar = useNavigate();
+  const sessao = useSessao();
+  const pendentes = useLiveQuery(() => db.fila_ops.count(), [], 0);
   const temExemplo = useLiveQuery(() => exemploJaCarregado(), [], true);
   const arquivoRef = useRef<HTMLInputElement>(null);
   const rejeitadas = useLiveQuery(() => db.fila_ops.where('status').equals('rejeitada').toArray(), [], []);
@@ -47,6 +51,26 @@ export function Configuracoes() {
   return (
     <main className="conteudo">
       <h1>Configurações</h1>
+
+      {API_URL && sessao && (
+        <section className="cartao" aria-labelledby="t-conta">
+          <h2 id="t-conta">Conta</h2>
+          <p>
+            {sessao.usuario.nome} · {sessao.usuario.email} · {sessao.usuario.perfil === 'admin' ? 'Administrador' : 'Veterinário'}
+          </p>
+          <p className="suave">Sessão válida sem internet até {formatarDataHora(sessao.renovacao_expira_em)}.</p>
+          <button
+            type="button"
+            className="botao"
+            onClick={() => {
+              if (pendentes > 0 && !window.confirm(`Há ${pendentes} alterações não sincronizadas. Elas continuam guardadas neste aparelho. Sair mesmo assim?`)) return;
+              void sair();
+            }}
+          >
+            Sair
+          </button>
+        </section>
+      )}
 
       <section className="cartao" aria-labelledby="t-tema">
         <h2 id="t-tema">Aparência</h2>
