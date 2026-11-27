@@ -9,6 +9,7 @@ import { registrarTubo } from '../../modules/mastite/dados';
 import { salvar } from '../../sync/mutacoes';
 import { FotosDo } from '../../components/Fotos';
 import { CabecalhoVisita } from './CabecalhoVisita';
+import { CondutasDaVisita } from '../../components/Condutas';
 import './AnimalVisita.css';
 
 const rotuloLinha = (e: ExameTeto) => e.posicao ?? `Teto ${e.linha}`;
@@ -148,6 +149,16 @@ export function AnimalVisita() {
         <p className="rotulo-grupo">Fotos do teto</p>
         <FotosDo tabela="exame_teto" id={atual.id} />
         {compostos.length > 0 && <p className="suave">Composto: {compostos.map((c) => `tubo ${c.numero_tubo}`).join(', ')}</p>}
+      </section>
+
+      <section className="cartao" aria-labelledby="t-conduta">
+        <h3 id="t-conduta">Conduta</h3>
+        <CondutasDaVisita visitaAnimalId={va} />
+        {animal && (
+          <p className="suave" style={{ marginBottom: 0 }}>
+            <Link to={`/animais/${animal.id}`}>Histórico e sugestões de {animal.identificacao}</Link>
+          </p>
+        )}
       </section>
 
       <nav className="topo-pagina" aria-label="Outros animais">

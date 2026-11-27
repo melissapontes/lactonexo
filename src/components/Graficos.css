@@ -1,0 +1,118 @@
+/* Cores das séries (paleta validada: azul e laranja, slots 1 e 2). Texto nunca usa a cor da série. */
+:root {
+  --serie-1: #257de0;
+  --serie-2: #f47230;
+  --grafico-grade: #e3e8e6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='claro']):not([data-tema='contraste']) {
+    --serie-1: #338ced;
+    --serie-2: #e76624;
+    --grafico-grade: #2e3936;
+  }
+}
+:root[data-tema='escuro'] {
+  --serie-1: #338ced;
+  --serie-2: #e76624;
+  --grafico-grade: #2e3936;
+}
+:root[data-tema='contraste'] {
+  --serie-1: #000000;
+  --serie-2: #000000;
+  --grafico-grade: #000000;
+}
+
+.grafico {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.grafico text {
+  fill: var(--cor-texto-suave);
+  font-size: 12px;
+  font-family: var(--fonte);
+}
+.grafico .grade {
+  stroke: var(--grafico-grade);
+  stroke-width: 1;
+}
+.grafico .linha {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.grafico .ponto {
+  stroke: var(--cor-superficie);
+  stroke-width: 2;
+}
+.grafico .alvo {
+  fill: transparent;
+}
+.grafico .rotulo-forte {
+  fill: var(--cor-texto);
+  font-weight: 600;
+}
+
+.multiplos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.multiplos figure {
+  margin: 0;
+}
+.multiplos figcaption {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 4px 0 8px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+  color: var(--cor-texto);
+}
+.legenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.barras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.barras li {
+  display: grid;
+  gap: 4px;
+}
+.barras .topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+.barras .trilho {
+  height: 12px;
+  border-radius: 4px;
+  background: var(--cor-superficie-2);
+  overflow: hidden;
+}
+.barras .barra {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--serie-1);
+  min-width: 2px;
+}
+:root[data-tema='contraste'] .barras .trilho {
+  border: 1px solid #000;
+}

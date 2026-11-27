@@ -1,6 +1,7 @@
 import type pg from 'pg';
 import { uuidDeTexto } from '../../src/lib/uuid';
 import { ANTIBIOTICOS_PADRAO, CATEGORIAS_ANIMAL, MICRORGANISMOS_PADRAO } from '../../src/modules/mastite/constantes';
+import { REGRAS_PADRAO, idRegraPadrao } from '../../src/modules/mastite/regras-padrao';
 
 /** Cria no servidor os itens padrão de catálogo com os MESMOS ids que o app cria offline. */
 export async function garantirCatalogoServidor(db: pg.Pool, organizacao_id: string) {
@@ -17,5 +18,17 @@ export async function garantirCatalogoServidor(db: pg.Pool, organizacao_id: stri
         [uuidDeTexto(`catalogo:${tipo}:${nome}`), organizacao_id, tipo, nome, i + 1],
       );
     }
+  }
+  await garantirRegrasServidor(db, organizacao_id);
+}
+
+/** Regras padrão de apoio à decisão, com os MESMOS ids que o app cria offline. */
+export async function garantirRegrasServidor(db: pg.Pool, organizacao_id: string) {
+  for (const r of REGRAS_PADRAO) {
+    await db.query(
+      `insert into regra (id, organizacao_id, modulo, tipo, parametros, ativa, atualizado_por)
+       values ($1, $2, 'mastite', $3, $4, true, 'sistema') on conflict (id) do nothing`,
+      [idRegraPadrao(r.tipo), organizacao_id, r.tipo, JSON.stringify(r.parametros)],
+    );
   }
 }

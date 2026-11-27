@@ -13,6 +13,7 @@ import { API_URL } from '../sync/sessao';
 import { baixarPropriedade } from '../sync/motor';
 import { formatarDataHora } from '../lib/datas';
 import { useOnline } from '../sync/useEstadoSync';
+import { useSugestoes } from '../components/Sugestoes';
 
 const STATUS: Record<string, string> = {
   em_campo: 'Em campo',
@@ -44,6 +45,8 @@ export function Propriedade() {
   const online = useOnline();
   const baixadoEm = useLiveQuery(() => lerMeta<string>(`baixado:${id}`), [id]);
   const [baixando, setBaixando] = useState('');
+  const sugestoes = useSugestoes(id);
+  const abertas = sugestoes?.filter((s) => s.estado === 'aberta').length ?? 0;
 
   useEffect(() => {
     if (p) document.title = tituloPagina(p.nome);
@@ -83,6 +86,11 @@ export function Propriedade() {
           {editar ? 'Fechar dados' : 'Editar dados'}
         </button>
       </div>
+
+      <Link to={`/propriedades/${id}/painel`} className="cartao cartao-link" data-testid="link-painel">
+        <strong>Painel e sugestões</strong>
+        <span className={abertas ? 'selo selo-alerta' : 'suave'}>{abertas ? `${abertas} ${abertas === 1 ? 'sugestão aberta' : 'sugestões abertas'}` : 'Prevalência, agentes e resistência'}</span>
+      </Link>
 
       {API_URL && (
         <section className="cartao" aria-label="Uso offline">
