@@ -184,3 +184,36 @@ a.botao-primario {
 .escolha-sir .escolha-op {
   min-height: 44px;
 }
+.fotos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.fotos-lista {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.foto-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+.foto {
+  margin: 0;
+  width: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.foto img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--cor-borda);
+}

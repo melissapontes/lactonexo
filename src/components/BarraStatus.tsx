@@ -17,6 +17,7 @@ export function BarraStatus() {
   let mensagem = '';
   const r = s.ultimoResultado;
   if (r?.tipo === 'sem_servidor') mensagem = 'Servidor ainda não configurado. Os dados ficam guardados neste aparelho.';
+  else if (r?.tipo === 'sessao') mensagem = r.mensagem;
   else if (r?.tipo === 'erro') mensagem = `Não foi possível sincronizar: ${r.mensagem}. Tentaremos de novo.`;
 
   return (
@@ -39,13 +40,18 @@ export function BarraStatus() {
             : `${s.pendentes} ${s.pendentes === 1 ? 'alteração pendente' : 'alterações pendentes'}`}
           {s.rejeitadas > 0 && <Link to="/configuracoes#nao-sincronizadas"> · {s.rejeitadas} não sincronizada(s)</Link>}
         </span>
+        {s.conflitos > 0 && (
+          <Link to="/conflitos" className="selo selo-alerta" data-testid="conflitos">
+            {s.conflitos} {s.conflitos === 1 ? 'conflito' : 'conflitos'} para revisar
+          </Link>
+        )}
         <span className="suave" data-testid="ultima-sync">
           Última sincronização: {s.ultimaSync ? formatarDataHora(s.ultimaSync) : 'nunca'}
         </span>
         <button
           type="button"
           className="botao botao-sync"
-          onClick={() => void sincronizar()}
+          onClick={() => void sincronizar({ forcar: true })}
           disabled={!s.online || s.sincronizando}
           aria-busy={s.sincronizando}
         >

@@ -1,7 +1,7 @@
 import { db, lerMeta, gravarMeta } from '../db/db';
 import type { Operacao, Registro, TabelaSync } from '../db/tipos';
 import { uuid } from '../lib/uuid';
-import { hlcDeTexto, hlcParaTexto, tick, type Hlc } from './hlc';
+import { hlcDeTexto, hlcParaTexto, receber, tick, type Hlc } from './hlc';
 
 const CAMPOS_CONTROLE = new Set(['id', 'versao', 'criado_em']);
 
@@ -32,6 +32,16 @@ async function proximoHlc(): Promise<string> {
   const texto = hlcParaTexto(relogio);
   await gravarMeta('hlc', texto);
   return texto;
+}
+
+/** Ajusta o relógio local pela hora do servidor (corrige celular com hora atrasada). */
+export async function ajustarRelogio(remoto: Hlc) {
+  if (!relogio) {
+    const salvo = await lerMeta<string>('hlc');
+    relogio = salvo ? hlcDeTexto(salvo) : { ms: 0, contador: 0, dispositivo: await dispositivoId() };
+  }
+  relogio = receber(relogio, remoto, Date.now());
+  await gravarMeta('hlc', hlcParaTexto(relogio));
 }
 
 /** Só para testes. */

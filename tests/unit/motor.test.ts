@@ -61,8 +61,13 @@ describe('motor de sync', () => {
     await salvar('propriedade', { nome: 'A' });
     s.falhar();
     expect((await sincronizar()).tipo).toBe('erro');
+    const [op] = await db.fila_ops.toArray();
+    expect(op).toMatchObject({ status: 'pendente', tentativas: 1 });
+    expect(op.proxima_tentativa_em).toBeGreaterThan(Date.now());
+    // Ciclo automático respeita a espera; "Sincronizar agora" não espera.
+    expect(await sincronizar()).toMatchObject({ tipo: 'ok', enviadas: 0 });
     expect(await db.fila_ops.count()).toBe(1);
-    expect((await sincronizar()).tipo).toBe('ok');
+    expect(await sincronizar({ forcar: true })).toMatchObject({ tipo: 'ok', enviadas: 1 });
     expect(await db.fila_ops.count()).toBe(0);
   });
 
@@ -89,6 +94,79 @@ describe('motor de sync', () => {
     await sincronizar();
     const [op] = await db.fila_ops.toArray();
     expect(op).toMatchObject({ status: 'rejeitada', erro: 'sem permissão' });
+  });
+});
+
+describe('motor de sync com o servidor', () => {
+  beforeEach(async () => {
+    await bancoNovo();
+    definirSessao('vet-1', 'org-1');
+  });
+
+  it('registro adiado (pai ainda não chegou) continua na fila', async () => {
+    configurarTransporte({
+      async push(ops) {
+        return { aceitas: [], rejeitadas: [], adiadas: ops.map((o) => o.op_id), hlc_servidor: '' };
+      },
+      async pull() {
+        return { mudancas: [], cursor: '1', tem_mais: false };
+      },
+    });
+    await salvar('exame_teto', { visita_animal_id: 'x', linha: 1, posicao: 'AE', tamis: null, cmt: null });
+    await sincronizar();
+    expect(await db.fila_ops.toArray()).toEqual([expect.objectContaining({ status: 'pendente', erro: 'Aguardando registro pai', tentativas: 1 })]);
+  });
+
+  it('o que vem do servidor não apaga a edição local ainda não enviada', async () => {
+    const id = await salvar('exame_teto', { visita_animal_id: 'va', linha: 1, posicao: 'AE', tamis: 'negativo', cmt: '++' });
+    configurarTransporte({
+      async push() {
+        throw new Error('sem sinal no envio');
+      },
+      async pull() {
+        return { mudancas: [], cursor: '1', tem_mais: false };
+      },
+    });
+    await sincronizar();
+    const { aplicarMudancas } = await import('../../src/sync/motor');
+    await aplicarMudancas([{ tabela: 'exame_teto', registro: { id, versao: 9, visita_animal_id: 'va', linha: 1, posicao: 'AE', tamis: 'positivo', cmt: 'N' } }]);
+    expect(await db.exame_teto.get(id)).toMatchObject({ cmt: '++', tamis: 'negativo', versao: 9 });
+  });
+
+  it('baixa em páginas até acabar e grava o cursor', async () => {
+    let chamada = 0;
+    configurarTransporte({
+      async push() {
+        return { aceitas: [], rejeitadas: [], hlc_servidor: '' };
+      },
+      async pull(cursor) {
+        chamada++;
+        return {
+          mudancas: [{ tabela: 'propriedade', registro: { id: `p${chamada}`, versao: chamada, nome: `P${chamada}` } }],
+          cursor: String(chamada),
+          tem_mais: cursor === null,
+        };
+      },
+    });
+    expect(await sincronizar()).toMatchObject({ tipo: 'ok', recebidas: 2 });
+    expect(await db.propriedade.count()).toBe(2);
+    expect(await db.meta.get('cursor')).toMatchObject({ valor: '2' });
+  });
+
+  it('ajusta o relógio pela hora do servidor', async () => {
+    configurarTransporte({
+      async push(ops) {
+        return { aceitas: ops.map((o) => o.op_id), rejeitadas: [], hlc_servidor: '999999999999999-00000-servidor' };
+      },
+      async pull() {
+        return { mudancas: [], cursor: '1', tem_mais: false };
+      },
+    });
+    await salvar('propriedade', { nome: 'A' });
+    await sincronizar();
+    await salvar('propriedade', { nome: 'B' });
+    const [op] = await db.fila_ops.toArray();
+    expect(op.hlc > '999999999999999').toBe(true);
   });
 });
 

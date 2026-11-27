@@ -10,12 +10,23 @@ export default defineConfig({
   fullyParallel: false,
   reporter: [['list']],
   use: { baseURL: 'http://localhost:4173', trace: 'off', locale: 'pt-BR', timezoneId: 'America/Recife' },
-  webServer: {
-    command: 'npm run preview',
-    url: 'http://localhost:4173',
-    reuseExistingServer: true,
-    timeout: 60_000,
-  },
+  globalSetup: './tests/e2e/preparar-servidor.ts',
+  webServer: [
+    { command: 'npm run preview', url: 'http://localhost:4173', reuseExistingServer: true, timeout: 60_000 },
+    // Com E2E_DATABASE_URL: API real + build do app apontando para ela (npm run build:e2e).
+    ...(process.env.E2E_DATABASE_URL
+      ? [
+          {
+            command: 'npm run server',
+            url: 'http://localhost:8787/api/saude',
+            reuseExistingServer: true,
+            timeout: 60_000,
+            env: { DATABASE_URL: process.env.E2E_DATABASE_URL, ORIGENS: 'http://localhost:4174', PORT: '8787' },
+          },
+          { command: 'npx vite preview --port 4174 --outDir dist-e2e', url: 'http://localhost:4174', reuseExistingServer: true, timeout: 60_000 },
+        ]
+      : []),
+  ],
   projects: [
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
     {

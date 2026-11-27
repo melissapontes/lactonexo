@@ -6,6 +6,8 @@ export interface RespostaPush {
   aceitas: string[];
   /** Recusas definitivas (permissão, validação): não são reenviadas. */
   rejeitadas: { op_id: string; motivo: string }[];
+  /** O registro pai ainda não chegou ao servidor: reenviar depois. */
+  adiadas?: string[];
   /** Hora do servidor como HLC, para ajustar o relógio local. */
   hlc_servidor: string;
 }
@@ -27,7 +29,8 @@ export interface RespostaPull {
  */
 export interface SyncTransport {
   push(ops: Operacao[]): Promise<RespostaPush>;
-  pull(cursor: string | null): Promise<RespostaPull>;
+  /** propriedade_id: download completo de uma propriedade ("Baixar para visita"). */
+  pull(cursor: string | null, propriedade_id?: string): Promise<RespostaPull>;
 }
 
 let transporte: SyncTransport | null = null;

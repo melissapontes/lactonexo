@@ -12,8 +12,8 @@ O nome, as cores e o logo ficam em um único lugar: `src/config/app.ts` e `publi
 | --- | --- | --- |
 | a | Esqueleto PWA instalável e offline | feita |
 | b | Cadastro e visita com preenchimento do laudo | feita |
-| c | Sincronização com servidor e conflitos | próxima |
-| d | Histórico, painel e regras de decisão | |
+| c | Sincronização com servidor e conflitos | feita |
+| d | Histórico, painel e regras de decisão | próxima |
 | e | Laudo em PDF e exportações | |
 | f | Notificações push | |
 
@@ -29,12 +29,33 @@ npm run build && npm run preview   # http://localhost:4173 (com service worker, 
 
 Para testar o modo offline, use o build (`preview`): o service worker não roda em `dev`.
 
+## Servidor (sincronização)
+
+Sem `VITE_API_URL`, o app funciona só no aparelho, sem login (útil para testar). Com servidor:
+
+```bash
+# PostgreSQL 15+ rodando; crie o banco: createdb lactonexo
+export DATABASE_URL=postgres://usuario:senha@localhost:5432/lactonexo
+npm run server:usuario -- --email voce@exemplo.com --nome "Seu Nome" --perfil admin   # mostra a senha provisória
+npm run server                                         # API em http://localhost:8787/api (aplica o esquema sozinha)
+VITE_API_URL=http://localhost:8787 npm run dev         # app apontando para a API
+```
+
+Variáveis do servidor: `DATABASE_URL`, `JWT_SEGREDO` (obrigatória em produção), `PORT` (8787),
+`ORIGENS` (endereços do app, separados por vírgula), `ACESSO_MINUTOS` (60), `DIAS_SESSAO` (30).
+
+Cada vet só vê as propriedades atribuídas a ele (tabela `atribuicao`); quem cria uma propriedade ganha acesso a ela.
+O administrador vê tudo. As regras de sincronização e conflito estão em [docs/sync.md](docs/sync.md).
+
 ## Testes
 
 ```bash
-npm test                         # unitários (fila de sync, HLC, backup)
+npm test                         # unitários (fila de sync, HLC, backup, tabelas do laudo)
+DATABASE_URL_TESTE=postgres://…/postgres npm run test:server   # servidor contra PostgreSQL real
 npx playwright install webkit chromium   # uma vez
 npm run build && npm run e2e     # E2E: rede cai no meio do preenchimento, fecha e reabre o app offline
+# E2E com servidor (dois vets offline no mesmo teto): crie o banco e rode
+createdb lactonexo_e2e && npm run build:e2e && E2E_DATABASE_URL=postgres://…/lactonexo_e2e npm run e2e
 ```
 
 O E2E roda no WebKit (motor do Safari) e no Chromium. O CI do GitHub roda os dois a cada pull request.
