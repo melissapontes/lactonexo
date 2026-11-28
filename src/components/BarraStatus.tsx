@@ -5,6 +5,7 @@ import { sincronizar } from '../sync/motor';
 import { useEstadoSync } from '../sync/useEstadoSync';
 import { Logo } from './Logo';
 import { IconeSino } from './IconeSino';
+import { MenuPrincipal } from './MenuPrincipal';
 import { IndicadorSalvo } from './IndicadorSalvo';
 import { useAvisos } from '../pages/Avisos';
 import './BarraStatus.css';
@@ -31,14 +32,17 @@ export function BarraStatus() {
           <span>{APP.nome}</span>
         </Link>
         <IndicadorSalvo />
-        <Link to="/avisos" className={`barra-avisos ${avisos?.length ? 'tem' : ''}`} data-testid="avisos" aria-label={avisos?.length ? `${avisos.length} avisos` : 'Avisos'}>
-          <IconeSino />
-          {avisos?.length ? <span className="contador">{avisos.length}</span> : null}
-        </Link>
-        <span className={`barra-rede ${s.online ? 'on' : 'off'}`} role="status" data-testid="estado-rede">
-          <span className="ponto" aria-hidden="true" />
-          {s.online ? 'Online' : 'Offline'}
-        </span>
+        <div className="barra-acoes">
+          <Link to="/avisos" className={`barra-avisos ${avisos?.length ? 'tem' : ''}`} data-testid="avisos" aria-label={avisos?.length ? `${avisos.length} avisos` : 'Avisos'}>
+            <IconeSino />
+            {avisos?.length ? <span className="contador">{avisos.length}</span> : null}
+          </Link>
+          <span className={`barra-rede ${s.online ? 'on' : 'off'}`} role="status" data-testid="estado-rede">
+            <span className="ponto" aria-hidden="true" />
+            {s.online ? 'Online' : 'Offline'}
+          </span>
+          <MenuPrincipal />
+        </div>
       </div>
       <div className="barra-linha barra-detalhe">
         <span data-testid="pendentes" className={pendenciaVelha ? 'pendencia-velha' : ''}>

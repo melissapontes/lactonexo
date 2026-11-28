@@ -12,24 +12,29 @@ async function oferecerInstalacao(page: Page) {
   });
 }
 
-test('a faixa de instalar pode ser fechada e a instalação continua em Configurações', async ({ page }) => {
+test('o convite de instalar some sozinho e a instalação continua no menu e em Configurações', async ({ page }) => {
   await page.goto('/');
   await oferecerInstalacao(page);
-  const faixa = page.getByTestId('faixa-instalar');
-  await expect(faixa).toBeVisible();
-  await faixa.getByRole('button', { name: 'Fechar convite de instalar' }).click();
-  await expect(faixa).toBeHidden();
-
-  // A escolha fica guardada: ao reabrir, a faixa não volta.
+  const convite = page.getByTestId('convite-instalar');
+  await expect(convite).toBeVisible();
+  await expect(convite.getByRole('button', { name: 'Instalar' })).toBeVisible();
+  // Some sozinho em 6 segundos e não volta na mesma sessão.
+  await expect(convite).toBeHidden({ timeout: 8000 });
   await page.reload();
   await oferecerInstalacao(page);
   await expect(page.getByRole('heading', { name: 'Propriedades' })).toBeVisible();
-  await expect(page.getByTestId('faixa-instalar')).toBeHidden();
+  await expect(page.getByTestId('convite-instalar')).toBeHidden();
 
-  await page.getByRole('link', { name: /Configurações: instalar o app/ }).click();
-  const secao = page.getByTestId('config-instalar');
-  await expect(secao.getByRole('heading', { name: 'Instalar o app' })).toBeVisible();
-  await secao.getByRole('button', { name: 'Instalar' }).click();
+  // Menu ☰ → Instalar o app
+  await page.getByTestId('menu').click();
+  await page.getByRole('button', { name: 'Instalar o app' }).click();
   await expect.poll(() => page.evaluate(() => (window as unknown as { pediuInstalar?: number }).pediuInstalar)).toBe(1);
-  await expect(secao.getByText('Tudo bem, dá para instalar depois por aqui.')).toBeVisible();
+
+  // Menu ☰ → Configurações → Instalar o app
+  await oferecerInstalacao(page);
+  await page.getByTestId('menu').click();
+  await page.getByRole('link', { name: 'Configurações', exact: true }).click();
+  const secao = page.getByTestId('config-instalar');
+  await secao.getByRole('button', { name: 'Instalar' }).click();
+  await expect.poll(() => page.evaluate(() => (window as unknown as { pediuInstalar?: number }).pediuInstalar)).toBe(2);
 });

@@ -24,7 +24,11 @@ registerRoute(
   new CacheFirst({ cacheName: 'splash', plugins: [new ExpirationPlugin({ maxEntries: 20 })] }),
 );
 
-// Atualização: só troca de versão quando o vet tocar em "Atualizar" (dados locais preservados).
+// Atualização silenciosa: a versão nova assume assim que é baixada, sem perguntar.
+// Os dados ficam no IndexedDB, que a troca de versão não toca. A página recarrega
+// sozinha só em momento seguro (ao abrir o app ou quando ele sai da tela); ver AtualizacaoSilenciosa.
+self.addEventListener('install', () => void self.skipWaiting());
+self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
 self.addEventListener('message', (e) => {
   if (e.data?.type === 'SKIP_WAITING') void self.skipWaiting();
 });

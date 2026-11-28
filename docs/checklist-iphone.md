@@ -38,8 +38,8 @@ Use um iPhone real com iOS 16.4 ou mais novo. Anote modelo, versão do iOS e dat
 - [ ] Todos os botões fáceis de tocar com o polegar.
 
 ## 7. Atualização do app
-- [ ] Publicar uma versão nova, abrir o app instalado: aparece "Nova versão do LactoNexo disponível".
-- [ ] Tocar em "Atualizar": o app recarrega e as alterações pendentes continuam lá.
+- [ ] Publicar uma versão nova, fechar e abrir o app instalado: ele recarrega sozinho com a versão nova, sem aviso.
+- [ ] Depois da troca de versão, as alterações pendentes continuam lá.
 
 ## 8. Laudo em PDF
 - [ ] Resumo da visita → "Enviar laudo (PDF)" abre o menu de compartilhar do iOS com o PDF; enviar pelo WhatsApp chega como documento.
