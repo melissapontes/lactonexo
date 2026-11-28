@@ -276,3 +276,47 @@ a.botao-primario {
   color: var(--cor-texto-suave);
   font-size: 0.9rem;
 }
+/* Créditos */
+.creditos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+.creditos-logo {
+  width: 180px;
+  height: auto;
+  border-radius: var(--raio);
+  background: #fff; /* a logo tem fundo claro: no tema escuro fica num cartão branco */
+  padding: 8px;
+}
+/* Detalhe da identidade: triângulos no canto de baixo, atrás do conteúdo. */
+body::after {
+  content: '';
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: min(46vw, 340px);
+  aspect-ratio: 3 / 2;
+  background: url('/decoracao/triangulos.svg') no-repeat right bottom / contain;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.9;
+}
+:root[data-tema='contraste'] body::after {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='claro']) body::after {
+    opacity: 0.45;
+  }
+}
+:root[data-tema='escuro'] body::after {
+  opacity: 0.45;
+}
+@media print {
+  body::after {
+    display: none;
+  }
+}

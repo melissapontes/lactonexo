@@ -61,6 +61,7 @@ export function MenuPrincipal() {
           )}
           <Link to="/configuracoes">Configurações</Link>
           <Link to="/configuracoes#backup">Backup</Link>
+          <Link to="/creditos">Créditos</Link>
           <span className="menu-rodape">{APP.nome}</span>
         </nav>
       )}

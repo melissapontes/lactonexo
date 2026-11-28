@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" preserveAspectRatio="xMaxYMax meet">
+  <!-- Detalhe decorativo da identidade NAPROSA: triângulos no canto inferior direito. -->
+  <polygon points="300,0 260,20 300,60" fill="#185878"/>
+  <polygon points="250,40 230,50 250,62" fill="#609898"/>
+  <polygon points="300,60 255,85 300,110" fill="#185878" opacity=".9"/>
+  <polygon points="255,85 210,110 255,135" fill="#38a0b8"/>
+  <polygon points="255,85 300,110 255,135" fill="#ffffff" opacity=".0"/>
+  <polygon points="300,110 255,135 300,160" fill="#609898"/>
+  <polygon points="210,110 255,135 210,160" fill="#ffffff" opacity="0"/>
+  <polygon points="165,105 145,115 165,125" fill="#283030"/>
+  <polygon points="190,118 170,130 190,142" fill="#609898"/>
+  <polygon points="255,135 210,160 255,185" fill="#185878"/>
+  <polygon points="300,160 255,185 300,200 300,160" fill="#283030"/>
+  <polygon points="255,135 300,160 255,185" fill="#38a0b8" opacity=".85"/>
+  <polygon points="210,160 165,185 210,200 210,160" fill="#185878"/>
+  <polygon points="210,160 255,185 255,200 210,200" fill="#609898" opacity=".9"/>
+  <polygon points="120,165 95,180 120,195" fill="#38a0b8"/>
+  <polygon points="128,170 128,200 155,200" fill="#185878"/>
+  <polygon points="300,0 300,0 300,0" fill="none"/>
+</svg>

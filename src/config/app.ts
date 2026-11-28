@@ -8,8 +8,8 @@ export const APP = {
   nomeCurto: 'LactoNexo',
   descricao: 'Acompanhamento da saúde da glândula mamária em fazendas de leite, offline.',
   /** Cor da barra do sistema e do splash. Manter em sincronia com --cor-marca em tema.css. */
-  corTema: '#1f6f78',
-  corFundo: '#f6f7f5',
+  corTema: '#185878',
+  corFundo: '#ffffff',
   idioma: 'pt-BR',
   /** Arquivo único do logo provisório. */
   logo: '/logo.svg',

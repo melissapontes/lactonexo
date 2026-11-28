@@ -3,14 +3,20 @@
  * (e public/logo.svg + APP.corTema em src/config/app.ts).
  */
 :root {
-  --cor-marca: #1f6f78;
+  /* Identidade NAPROSA: fundo branco, azul-petróleo, azul-água, verde-acinzentado e grafite. */
+  --cor-marca: #185878;
   --cor-marca-texto: #ffffff;
-  --cor-fundo: #f6f7f5;
+  --grad-marca: linear-gradient(135deg, #123f55 0%, #22708f 100%);
+  --cor-acento-1: #185878; /* azul-petróleo */
+  --cor-acento-2: #38a0b8; /* azul-água */
+  --cor-acento-3: #609898; /* verde-acinzentado */
+  --cor-acento-4: #283030; /* grafite */
+  --cor-fundo: #ffffff;
   --cor-superficie: #ffffff;
-  --cor-superficie-2: #eef1ee;
-  --cor-texto: #1b2422;
-  --cor-texto-suave: #55625f;
-  --cor-borda: #cfd6d3;
+  --cor-superficie-2: #f1f5f6;
+  --cor-texto: #1f2a2e;
+  --cor-texto-suave: #5e7479;
+  --cor-borda: #d3dfe3;
   --cor-ok: #1e7a3c;
   --cor-alerta: #a15c00;
   --cor-erro: #b3261e;
@@ -23,14 +29,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-tema='claro']):not([data-tema='contraste']) {
-    --cor-marca: #5fb3bb;
-    --cor-marca-texto: #0c1a1c;
-    --cor-fundo: #111716;
-    --cor-superficie: #1a2220;
-    --cor-superficie-2: #232d2b;
-    --cor-texto: #e7ecea;
-    --cor-texto-suave: #a7b3b0;
-    --cor-borda: #3a4744;
+    --cor-marca: #5cb6cf;
+    --cor-marca-texto: #06212a;
+    --grad-marca: linear-gradient(135deg, #3f9cb8 0%, #7cc8dc 100%);
+    --cor-fundo: #0b1619;
+    --cor-superficie: #12232a;
+    --cor-superficie-2: #1a2e35;
+    --cor-texto: #e4eef1;
+    --cor-texto-suave: #9fb6bd;
+    --cor-borda: #2f4850;
     --cor-ok: #6fcf8f;
     --cor-alerta: #f0b35a;
     --cor-erro: #ff8a80;
@@ -40,14 +47,15 @@
 }
 
 :root[data-tema='escuro'] {
-  --cor-marca: #5fb3bb;
-  --cor-marca-texto: #0c1a1c;
-  --cor-fundo: #111716;
-  --cor-superficie: #1a2220;
-  --cor-superficie-2: #232d2b;
-  --cor-texto: #e7ecea;
-  --cor-texto-suave: #a7b3b0;
-  --cor-borda: #3a4744;
+  --cor-marca: #5cb6cf;
+  --cor-marca-texto: #06212a;
+  --grad-marca: linear-gradient(135deg, #3f9cb8 0%, #7cc8dc 100%);
+  --cor-fundo: #0b1619;
+  --cor-superficie: #12232a;
+  --cor-superficie-2: #1a2e35;
+  --cor-texto: #e4eef1;
+  --cor-texto-suave: #9fb6bd;
+  --cor-borda: #2f4850;
   --cor-ok: #6fcf8f;
   --cor-alerta: #f0b35a;
   --cor-erro: #ff8a80;
@@ -59,6 +67,7 @@
 :root[data-tema='contraste'] {
   --cor-marca: #000000;
   --cor-marca-texto: #ffffff;
+  --grad-marca: #000000;
   --cor-fundo: #ffffff;
   --cor-superficie: #ffffff;
   --cor-superficie-2: #ffffff;
@@ -145,12 +154,12 @@ button {
   cursor: default;
 }
 .botao-primario {
-  background: var(--cor-marca);
+  background: var(--grad-marca, var(--cor-marca));
   color: var(--cor-marca-texto);
   border-color: var(--cor-marca);
 }
 .botao-primario:active {
-  background: var(--cor-marca);
+  background: var(--grad-marca, var(--cor-marca));
   filter: brightness(0.92);
 }
 
