@@ -1,3 +1,4 @@
+import { Fab } from '../../components/Fab';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -86,12 +87,10 @@ export function Visita() {
         })}
       </ul>
 
-      <section className="cartao">
-        <button type="button" className="botao botao-primario" onClick={() => setAdicionar((x) => !x)} aria-expanded={adicionar}>
-          {adicionar ? 'Fechar' : 'Adicionar animal à visita'}
-        </button>
-        {adicionar && (
-          <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <Fab rotulo={adicionar ? 'Fechar adicionar animal' : 'Adicionar animal à visita'} aberto={adicionar} aoTocar={() => setAdicionar((x) => !x)} />
+      {adicionar && (
+      <section className="cartao" aria-label="Adicionar animal à visita" id="adicionar-animal">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {disponiveis && disponiveis.length > 0 && (
               <div className="escolha" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))' }}>
                 {disponiveis.map((a) => (
@@ -121,8 +120,8 @@ export function Visita() {
               <button type="submit" className="botao">Cadastrar e incluir</button>
             </form>
           </div>
-        )}
       </section>
+      )}
     </main>
   );
 }

@@ -14,6 +14,7 @@ import { baixarPropriedade } from '../sync/motor';
 import { formatarDataHora } from '../lib/datas';
 import { useOnline } from '../sync/useEstadoSync';
 import { useSugestoes } from '../components/Sugestoes';
+import { Fab } from '../components/Fab';
 
 const STATUS: Record<string, string> = {
   em_campo: 'Em campo',
@@ -39,7 +40,7 @@ export function Propriedade() {
     [id],
   );
   const categorias = useLiveQuery(() => itensCatalogo('categoria'), []);
-  const [dataVisita, setDataVisita] = useState(hojeISO());
+  const [novoAnimalAberto, setNovoAnimalAberto] = useState(false);
   const [aviso, setAviso] = useState('');
   const [editar, setEditar] = useState(false);
   const online = useOnline();
@@ -140,21 +141,7 @@ export function Propriedade() {
 
       <section className="cartao" aria-labelledby="t-visitas">
         <h2 id="t-visitas">Visitas</h2>
-        <form
-          className="form-linha"
-          style={{ alignItems: 'flex-end', marginTop: 12 }}
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const v = await criarVisita(id, dataVisita);
-            navegar(`/visitas/${v}`);
-          }}
-        >
-          <label className="campo">
-            Data da visita
-            <input type="date" value={dataVisita} onChange={(e) => setDataVisita(e.target.value)} required />
-          </label>
-          <button type="submit" className="botao botao-primario">Nova visita</button>
-        </form>
+        {visitas?.length === 0 && <p className="suave vazio">Nenhuma visita ainda.</p>}
         <ul className="lista-cartoes" style={{ marginTop: 12 }} aria-label="Visitas">
           {visitas?.map((v) => (
             <li key={v.id} className="cartao">
@@ -167,24 +154,42 @@ export function Propriedade() {
         </ul>
       </section>
 
+      <Fab
+        rotulo="Adicionar"
+        acoes={[
+          { rotulo: 'Nova visita', aoTocar: () => void criarVisita(id, hojeISO()).then((v) => navegar(`/visitas/${v}`)) },
+          {
+            rotulo: 'Novo animal',
+            aoTocar: () => {
+              setNovoAnimalAberto(true);
+              requestAnimationFrame(() => document.getElementById('t-animais')?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
+            },
+          },
+        ]}
+      />
+
       <section className="cartao" aria-labelledby="t-animais">
         <h2 id="t-animais">Animais ({animais?.length ?? 0})</h2>
-        <form className="form-linha" style={{ alignItems: 'flex-end', marginTop: 12 }} onSubmit={novoAnimal} aria-label="Novo animal">
-          <label className="campo" style={{ flex: '2 1 160px' }}>
-            Identificação (número ou nome)
-            <input name="identificacao" autoComplete="off" required />
-          </label>
-          <label className="campo">
-            Categoria
-            <select name="categoria" defaultValue="Vaca em lactação">
-              <option value="">—</option>
-              {categorias?.map((c) => (
-                <option key={c.id}>{c.nome}</option>
-              ))}
-            </select>
-          </label>
-          <button type="submit" className="botao">Adicionar animal</button>
-        </form>
+        {novoAnimalAberto && (
+          <form className="form-linha" style={{ alignItems: 'flex-end', marginTop: 12 }} onSubmit={novoAnimal} aria-label="Novo animal">
+            <label className="campo" style={{ flex: '2 1 160px' }}>
+              Identificação (número ou nome)
+              <input name="identificacao" autoComplete="off" required autoFocus />
+            </label>
+            <label className="campo">
+              Categoria
+              <select name="categoria" defaultValue="Vaca em lactação">
+                <option value="">—</option>
+                {categorias?.map((c) => (
+                  <option key={c.id}>{c.nome}</option>
+                ))}
+              </select>
+            </label>
+            <button type="submit" className="botao botao-primario">Salvar animal</button>
+            <button type="button" className="botao" onClick={() => setNovoAnimalAberto(false)}>Fechar</button>
+          </form>
+        )}
+        {animais?.length === 0 && !novoAnimalAberto && <p className="suave vazio">Nenhum animal ainda.</p>}
         {aviso && <p className="aviso aviso-alerta" role="alert">{aviso}</p>}
         <ul className="lista-cartoes" style={{ marginTop: 12 }} aria-label="Animais">
           {animais?.map((a) => (

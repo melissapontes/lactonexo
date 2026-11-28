@@ -45,7 +45,7 @@ export function Painel() {
       <h1>Painel</h1>
 
       {!ultima ? (
-        <p className="cartao suave">Ainda não há visitas com exames nesta propriedade.</p>
+        <p className="suave vazio">Nenhuma visita com exames ainda.</p>
       ) : (
         <>
           <section className="cartao" aria-labelledby="t-prev">

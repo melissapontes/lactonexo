@@ -4,6 +4,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import { salvar } from '../sync/mutacoes';
 import { tituloPagina } from '../config/app';
+import { Fab } from '../components/Fab';
 
 export const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
 
@@ -40,12 +41,8 @@ export function Inicio() {
 
   return (
     <main className="conteudo">
-      <div className="topo-pagina">
-        <h1>Propriedades</h1>
-        <button type="button" className="botao botao-primario" onClick={() => setAbrirForm((v) => !v)} aria-expanded={abrirForm}>
-          {abrirForm ? 'Cancelar' : 'Nova propriedade'}
-        </button>
-      </div>
+      <h1>Propriedades</h1>
+      <Fab rotulo={abrirForm ? 'Cancelar nova propriedade' : 'Nova propriedade'} aberto={abrirForm} aoTocar={() => setAbrirForm((v) => !v)} />
       <p className="visualmente-oculto" role="status">{salvo}</p>
       {salvo && !abrirForm && <p className="suave" style={{ margin: 0, color: 'var(--cor-ok)' }}>✓ {salvo}</p>}
 
@@ -83,15 +80,7 @@ export function Inicio() {
         </form>
       )}
 
-      {propriedades && propriedades.length === 0 && !abrirForm && (
-        <div className="cartao">
-          <p style={{ marginTop: 0 }}>Nenhuma propriedade neste aparelho ainda.</p>
-          <p className="suave" style={{ marginBottom: 0 }}>
-            Toque em <strong>Nova propriedade</strong> para começar. Depois cadastre os animais e abra uma visita para
-            preencher o laudo. Tudo funciona sem internet.
-          </p>
-        </div>
-      )}
+      {propriedades && propriedades.length === 0 && !abrirForm && <p className="suave vazio">Nenhuma propriedade por aqui ainda.</p>}
 
       <ul className="lista-cartoes" aria-label="Propriedades">
         {propriedades?.map((p) => (

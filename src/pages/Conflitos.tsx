@@ -53,7 +53,7 @@ export function Conflitos() {
       <p className="suave">
         Duas pessoas alteraram o mesmo dado sem internet. O valor mais recente já está valendo; confira e escolha o correto.
       </p>
-      {lista?.length === 0 && <p className="cartao">Nenhum conflito pendente.</p>}
+      {lista?.length === 0 && <p className="suave vazio">Nenhum conflito pendente.</p>}
       <ul className="lista-cartoes" style={{ gridTemplateColumns: '1fr' }}>
         {lista?.map(({ c, vencedor, perdedor, autorV, autorP }) => (
           <li key={c.id} className="cartao" data-testid="conflito">

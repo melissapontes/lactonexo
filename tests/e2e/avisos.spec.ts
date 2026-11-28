@@ -1,4 +1,15 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+/** Botão + da propriedade: abre a lista e escolhe a ação. */
+async function adicionar(page: Page, acao: 'Nova visita' | 'Novo animal') {
+  await page.getByRole('button', { name: 'Adicionar', exact: true }).click();
+  await page.getByRole('menuitem', { name: acao }).click();
+}
+async function novoAnimal(page: Page, identificacao: string) {
+  await adicionar(page, 'Novo animal');
+  await page.getByLabel('Identificação (número ou nome)').fill(identificacao);
+  await page.getByRole('button', { name: 'Salvar animal' }).click();
+}
 
 test('revisita marcada para hoje aparece no sino e na tela Avisos, mesmo sem servidor', async ({ page }) => {
   await page.goto('/');
@@ -6,9 +17,8 @@ test('revisita marcada para hoje aparece no sino e na tela Avisos, mesmo sem ser
   await page.getByLabel('Nome da propriedade').fill('Sítio Avisos');
   await page.getByRole('button', { name: 'Salvar propriedade' }).click();
   await page.getByRole('link', { name: /Sítio Avisos/ }).click();
-  await page.getByLabel('Identificação (número ou nome)').fill('Estrela');
-  await page.getByRole('button', { name: 'Adicionar animal' }).click();
-  await page.getByRole('button', { name: 'Nova visita' }).click();
+  await novoAnimal(page, 'Estrela');
+  await adicionar(page, 'Nova visita');
   await page.getByRole('button', { name: 'Adicionar animal à visita' }).click();
   await page.getByRole('button', { name: 'Estrela', exact: true }).click();
 
