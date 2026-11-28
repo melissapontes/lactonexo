@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { APP } from '../config/app';
-import { ehIOS, estaInstalado } from '../lib/plataforma';
+import { fecharFaixaInstalar, instalarApp, useInstalar } from '../lib/instalar';
 import { Logo } from './Logo';
 import './Onboarding.css';
-
-type EventoInstalar = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
 
 const CHAVE_CONTINUAR = 'lactonexo:continuar-sem-instalar';
 
@@ -32,8 +30,7 @@ function IconeAdicionar() {
  * por isso o uso no navegador só é permitido com aviso explícito.
  */
 export function Onboarding({ children }: { children: React.ReactNode }) {
-  const ios = ehIOS();
-  const [instalado, setInstalado] = useState(estaInstalado);
+  const { ios, instalado, podeInstalar, faixaFechada } = useInstalar();
   const [continuar, setContinuar] = useState(() => {
     try {
       return sessionStorage.getItem(CHAVE_CONTINUAR) === '1';
@@ -41,24 +38,6 @@ export function Onboarding({ children }: { children: React.ReactNode }) {
       return false;
     }
   });
-  const [eventoInstalar, setEventoInstalar] = useState<EventoInstalar | null>(null);
-
-  useEffect(() => {
-    const mq = window.matchMedia?.('(display-mode: standalone)');
-    const mudou = () => setInstalado(estaInstalado());
-    mq?.addEventListener?.('change', mudou);
-    const antes = (e: Event) => {
-      e.preventDefault();
-      setEventoInstalar(e as EventoInstalar);
-    };
-    window.addEventListener('beforeinstallprompt', antes);
-    window.addEventListener('appinstalled', mudou);
-    return () => {
-      mq?.removeEventListener?.('change', mudou);
-      window.removeEventListener('beforeinstallprompt', antes);
-      window.removeEventListener('appinstalled', mudou);
-    };
-  }, []);
 
   if (ios && !instalado && !continuar) {
     return (
@@ -126,21 +105,18 @@ export function Onboarding({ children }: { children: React.ReactNode }) {
           </p>
         </div>
       )}
-      {!ios && !instalado && eventoInstalar && (
-        <div className="aviso aviso-alerta onb-faixa">
-          <p>
-            Instale o {APP.nome} para usar offline com mais segurança.{' '}
-            <button
-              type="button"
-              className="botao botao-primario"
-              onClick={async () => {
-                await eventoInstalar.prompt();
-                setEventoInstalar(null);
-              }}
-            >
+      {!ios && !instalado && podeInstalar && !faixaFechada && (
+        <div className="aviso aviso-alerta onb-faixa" data-testid="faixa-instalar">
+          <p>Instale o {APP.nome} para usar offline com mais segurança.</p>
+          <div className="onb-faixa-botoes">
+            <button type="button" className="botao botao-primario" onClick={() => void instalarApp()}>
               Instalar
             </button>
-          </p>
+            <button type="button" className="botao" onClick={fecharFaixaInstalar}>
+              Agora não
+            </button>
+          </div>
+          <p className="suave onb-faixa-nota">Dá para instalar depois em Configurações.</p>
         </div>
       )}
       {children}

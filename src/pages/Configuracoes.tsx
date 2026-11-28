@@ -8,6 +8,7 @@ import { formatarDataHora } from '../lib/datas';
 import { EditorCatalogo } from '../components/EditorCatalogo';
 import { EditorRegras } from '../components/EditorRegras';
 import { ConfigNotificacoes } from '../components/ConfigNotificacoes';
+import { ConfigInstalar } from '../components/ConfigInstalar';
 import { carregarExemploLaudo, exemploJaCarregado } from '../modules/mastite/seed-laudo';
 import { useNavigate } from 'react-router-dom';
 import { API_URL, sair } from '../sync/sessao';
@@ -53,6 +54,8 @@ export function Configuracoes() {
   return (
     <main className="conteudo">
       <h1>Configurações</h1>
+
+      <ConfigInstalar />
 
       {API_URL && sessao && (
         <section className="cartao" aria-labelledby="t-conta">
