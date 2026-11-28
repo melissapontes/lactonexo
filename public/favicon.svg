@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="86 88 340 348">
+  <!-- Favicon: a gota do logo (public/logo.svg) sem o quadrado de fundo. -->
+  <style>.gota{fill:#1f6f78}@media (prefers-color-scheme:dark){.gota{fill:#5fb3bb}}</style>
+  <path class="gota" d="M256 92c-62 86-118 154-118 222a118 118 0 0 0 236 0c0-68-56-136-118-222z"/>
+  <circle cx="256" cy="318" r="34" fill="#ffffff"/>
+  <circle cx="206" cy="268" r="14" fill="#ffffff"/>
+  <circle cx="306" cy="268" r="14" fill="#ffffff"/>
+  <path d="M216 278l26 26M296 278l-26 26" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+</svg>
