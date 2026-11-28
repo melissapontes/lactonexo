@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { APP } from '../config/app';
-import { fecharFaixaInstalar, instalarApp, useInstalar } from '../lib/instalar';
+import { useInstalar } from '../lib/instalar';
 import { Logo } from './Logo';
 import './Onboarding.css';
 
@@ -30,7 +30,7 @@ function IconeAdicionar() {
  * por isso o uso no navegador só é permitido com aviso explícito.
  */
 export function Onboarding({ children }: { children: React.ReactNode }) {
-  const { ios, instalado, podeInstalar, faixaFechada } = useInstalar();
+  const { ios, instalado } = useInstalar();
   const [continuar, setContinuar] = useState(() => {
     try {
       return sessionStorage.getItem(CHAVE_CONTINUAR) === '1';
@@ -103,20 +103,6 @@ export function Onboarding({ children }: { children: React.ReactNode }) {
             <strong>Modo navegador:</strong> o iPhone pode apagar estes dados. Instale pelo menu Compartilhar → Adicionar
             à Tela de Início antes de registrar visitas.
           </p>
-        </div>
-      )}
-      {!ios && !instalado && podeInstalar && !faixaFechada && (
-        <div className="aviso aviso-alerta onb-faixa" data-testid="faixa-instalar">
-          <p>Instale o {APP.nome} para usar offline com mais segurança.</p>
-          <div className="onb-faixa-botoes">
-            <button type="button" className="botao botao-primario" onClick={() => void instalarApp()}>
-              Instalar
-            </button>
-            <button type="button" className="botao" onClick={fecharFaixaInstalar}>
-              Agora não
-            </button>
-          </div>
-          <p className="suave onb-faixa-nota">Dá para instalar depois em Configurações.</p>
         </div>
       )}
       {children}

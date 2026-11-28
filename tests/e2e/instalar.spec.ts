@@ -17,7 +17,7 @@ test('a faixa de instalar pode ser fechada e a instalação continua em Configur
   await oferecerInstalacao(page);
   const faixa = page.getByTestId('faixa-instalar');
   await expect(faixa).toBeVisible();
-  await faixa.getByRole('button', { name: 'Agora não' }).click();
+  await faixa.getByRole('button', { name: 'Fechar convite de instalar' }).click();
   await expect(faixa).toBeHidden();
 
   // A escolha fica guardada: ao reabrir, a faixa não volta.

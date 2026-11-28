@@ -62,13 +62,3 @@
 .onb-faixa p {
   margin: 0;
 }
-.onb-faixa-botoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-.onb-faixa .onb-faixa-nota {
-  margin-top: 6px;
-  font-size: 0.85rem;
-}
