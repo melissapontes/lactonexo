@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { AvisoAtualizacao } from './components/AvisoAtualizacao';
+import { AtualizacaoSilenciosa } from './components/AtualizacaoSilenciosa';
 import { BarraStatus } from './components/BarraStatus';
 import { Onboarding } from './components/Onboarding';
 import { pedirPersistencia } from './lib/armazenamento';
@@ -49,7 +49,7 @@ export function App() {
         ) : (
           <>
         <BarraStatus />
-        <AvisoAtualizacao />
+        <AtualizacaoSilenciosa />
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/configuracoes" element={<Configuracoes />} />

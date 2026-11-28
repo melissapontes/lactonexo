@@ -104,3 +104,19 @@
   border-radius: 999px;
   padding: 1px 6px;
 }
+.barra-acoes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+.barra-acoes .barra-rede {
+  margin: 0 4px;
+}
+.barra-linha:first-child {
+  flex-wrap: nowrap;
+}
+.barra-linha:first-child .barra-marca {
+  min-width: 0;
+  white-space: nowrap;
+}

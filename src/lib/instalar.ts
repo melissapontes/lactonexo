@@ -2,23 +2,19 @@ import { useSyncExternalStore } from 'react';
 import { ehIOS, estaInstalado } from './plataforma';
 
 /**
- * Estado da instalação do app, compartilhado entre a faixa do topo e a tela de Configurações.
+ * Estado da instalação do app, compartilhado entre o aviso rápido, o menu ☰ e a tela de Configurações.
  * O navegador dispara `beforeinstallprompt` uma vez só, cedo, então o evento é guardado aqui
- * desde o carregamento do módulo; assim o botão "Instalar" continua funcionando depois que a
- * pessoa fecha a faixa.
+ * desde o carregamento do módulo; assim o botão "Instalar" continua funcionando depois que o
+ * aviso rápido some.
  */
 
 type EventoInstalar = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
-
-const CHAVE_FAIXA_FECHADA = 'lactonexo:faixa-instalar-fechada';
 
 export interface EstadoInstalar {
   ios: boolean;
   instalado: boolean;
   /** O navegador ofereceu a instalação (Chrome, Edge, Android). */
   podeInstalar: boolean;
-  /** A pessoa fechou a faixa "Instale o app". */
-  faixaFechada: boolean;
 }
 
 let evento: EventoInstalar | null = null;
@@ -26,17 +22,8 @@ let estado: EstadoInstalar = {
   ios: typeof navigator !== 'undefined' && ehIOS(),
   instalado: typeof window !== 'undefined' && estaInstalado(),
   podeInstalar: false,
-  faixaFechada: lerFaixaFechada(),
 };
 const ouvintes = new Set<() => void>();
-
-function lerFaixaFechada(): boolean {
-  try {
-    return localStorage.getItem(CHAVE_FAIXA_FECHADA) === '1';
-  } catch {
-    return false;
-  }
-}
 
 function atualizar(parcial: Partial<EstadoInstalar>) {
   estado = { ...estado, ...parcial };
@@ -66,16 +53,6 @@ export async function instalarApp(): Promise<boolean> {
   evento = null;
   atualizar({ podeInstalar: false, instalado: outcome === 'accepted' || estado.instalado });
   return outcome === 'accepted';
-}
-
-/** Esconde a faixa do topo; a instalação continua disponível em Configurações. */
-export function fecharFaixaInstalar() {
-  try {
-    localStorage.setItem(CHAVE_FAIXA_FECHADA, '1');
-  } catch {
-    /* só preferência visual */
-  }
-  atualizar({ faixaFechada: true });
 }
 
 export function useInstalar(): EstadoInstalar {

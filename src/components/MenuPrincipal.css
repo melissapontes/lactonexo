@@ -1,0 +1,59 @@
+.menu {
+  position: relative;
+}
+.menu-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--raio);
+  background: transparent;
+  color: var(--cor-texto);
+  cursor: pointer;
+}
+.menu-botao:hover,
+.menu-botao[aria-expanded='true'] {
+  background: var(--cor-fundo);
+}
+.menu-lista {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 30;
+  min-width: 210px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.16);
+}
+.menu-lista a,
+.menu-lista button {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: calc(var(--raio) - 4px);
+  background: transparent;
+  color: var(--cor-texto);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.menu-lista a:hover,
+.menu-lista button:hover {
+  background: var(--cor-fundo);
+}
+.menu-rodape {
+  padding: 6px 12px 2px;
+  font-size: 0.75rem;
+  color: var(--cor-texto-suave);
+  border-top: 1px solid var(--cor-borda);
+  margin-top: 4px;
+}
