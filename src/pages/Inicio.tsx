@@ -107,9 +107,6 @@ export function Inicio() {
         ))}
       </ul>
 
-      <p className="suave" style={{ marginTop: 'auto' }}>
-        <Link to="/configuracoes">Configurações: instalar o app, listas e backup</Link>
-      </p>
     </main>
   );
 }
