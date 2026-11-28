@@ -80,6 +80,7 @@
 }
 
 .barra-avisos {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -91,7 +92,12 @@
   font-size: 1.1rem;
 }
 .barra-avisos .contador {
-  font-size: 0.8rem;
+  position: absolute;
+  top: 2px;
+  right: -2px;
+  line-height: 1.2;
+  border: 2px solid var(--cor-superficie);
+  font-size: 0.75rem;
   font-weight: 700;
   background: var(--cor-erro);
   color: #fff;

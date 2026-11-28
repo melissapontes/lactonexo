@@ -41,7 +41,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
         globIgnores: ['splash/**'],
       },
-      includeAssets: ['logo.svg', 'apple-touch-icon.png', 'favicon-32.png'],
+      includeAssets: ['logo.svg', 'favicon.svg', 'apple-touch-icon.png', 'favicon-32.png'],
       manifest: {
         id: '/',
         name: APP.nome,

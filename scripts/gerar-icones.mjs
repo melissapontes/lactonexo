@@ -39,7 +39,11 @@ for (const t of [192, 512]) {
     .png()
     .toFile(path.join(pub, 'apple-touch-icon.png'));
 }
-await png(32).toFile(path.join(pub, 'favicon-32.png'));
+// Favicon: só a gota, com fundo transparente (public/favicon.svg).
+await sharp(await readFile(path.join(pub, 'favicon.svg')), { density: 384 })
+  .resize(32, 32, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+  .png()
+  .toFile(path.join(pub, 'favicon-32.png'));
 
 for (const s of splash) {
   const W = s.w * s.dpr, H = s.h * s.dpr;

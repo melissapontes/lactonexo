@@ -4,6 +4,7 @@ import { formatarDataHora } from '../lib/datas';
 import { sincronizar } from '../sync/motor';
 import { useEstadoSync } from '../sync/useEstadoSync';
 import { Logo } from './Logo';
+import { IconeSino } from './IconeSino';
 import { IndicadorSalvo } from './IndicadorSalvo';
 import { useAvisos } from '../pages/Avisos';
 import './BarraStatus.css';
@@ -31,7 +32,7 @@ export function BarraStatus() {
         </Link>
         <IndicadorSalvo />
         <Link to="/avisos" className={`barra-avisos ${avisos?.length ? 'tem' : ''}`} data-testid="avisos" aria-label={avisos?.length ? `${avisos.length} avisos` : 'Avisos'}>
-          <span aria-hidden="true">🔔</span>
+          <IconeSino />
           {avisos?.length ? <span className="contador">{avisos.length}</span> : null}
         </Link>
         <span className={`barra-rede ${s.online ? 'on' : 'off'}`} role="status" data-testid="estado-rede">
