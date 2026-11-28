@@ -1,7 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="86 88 340 348">
-  <!-- Favicon: a gota do logo (public/logo.svg) sem o quadrado de fundo. -->
-  <style>.gota{fill:#1f6f78}@media (prefers-color-scheme:dark){.gota{fill:#5fb3bb}}</style>
-  <path class="gota" d="M256 92c-62 86-118 154-118 222a118 118 0 0 0 236 0c0-68-56-136-118-222z"/>
+  <!-- Favicon: a gota do logo (public/logo.svg) sem o quadrado de fundo, nas cores do NAPROSA. -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#123f55"/>
+      <stop offset="1" stop-color="#2a86a6"/>
+    </linearGradient>
+  </defs>
+  <style>@media (prefers-color-scheme:dark){.gota{fill:#5cb6cf}}</style>
+  <path class="gota" fill="url(#g)" d="M256 92c-62 86-118 154-118 222a118 118 0 0 0 236 0c0-68-56-136-118-222z"/>
   <circle cx="256" cy="318" r="34" fill="#ffffff"/>
   <circle cx="206" cy="268" r="14" fill="#ffffff"/>
   <circle cx="306" cy="268" r="14" fill="#ffffff"/>
