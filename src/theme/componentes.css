@@ -104,13 +104,25 @@
   color: var(--cor-erro);
   border-color: currentColor;
 }
+/* "✓ Salvo" flutua logo abaixo da barra do topo: não empurra o nome do app nem os ícones. */
 .indicador-salvo {
+  position: absolute;
+  right: 16px;
+  top: calc(100% + 6px);
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--cor-ok);
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.2s;
-  min-width: 4.5em;
+}
+.indicador-salvo:empty {
+  border: 0;
+  padding: 0;
 }
 .indicador-salvo.visivel {
   opacity: 1;
@@ -319,4 +331,8 @@ body::after {
   body::after {
     display: none;
   }
+}
+/* Estado vazio: só uma frase curta, sem cartão. */
+.vazio {
+  margin: 8px 0;
 }

@@ -1,5 +1,11 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 
+/** Botão + da propriedade: abre a lista e escolhe a ação. */
+async function adicionar(page: Page, acao: 'Nova visita' | 'Novo animal') {
+  await page.getByRole('button', { name: 'Adicionar', exact: true }).click();
+  await page.getByRole('menuitem', { name: acao }).click();
+}
+
 /** E2E com servidor real: dois veterinários editam o mesmo teto sem internet. */
 test.skip(!process.env.E2E_DATABASE_URL, 'Defina E2E_DATABASE_URL para rodar com servidor.');
 test.use({ baseURL: 'http://localhost:4174' });
@@ -32,7 +38,7 @@ test('dois vets offline no mesmo teto: nada se perde e o conflito aparece para r
   // Ana abre a visita com sinal e sincroniza.
   await a.getByRole('link', { name: /Fazenda E2E/ }).click();
   await expect(a.getByTestId('baixado')).toContainText('Pronta para uso offline');
-  await a.getByRole('button', { name: 'Nova visita' }).click();
+  await adicionar(a, 'Nova visita');
   await a.getByRole('button', { name: 'Adicionar animal à visita' }).click();
   await a.getByRole('button', { name: '064', exact: true }).click();
   await marcarCmtAE(a, '+');

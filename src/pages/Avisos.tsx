@@ -25,7 +25,7 @@ export function Avisos() {
       {!avisos ? (
         <p className="suave">Carregando…</p>
       ) : !avisos.length ? (
-        <p className="cartao suave">Nenhum aviso agora. Revisitas, resultados de cultura e laudos pendentes aparecem aqui.</p>
+        <p className="suave vazio">Nenhum aviso por agora.</p>
       ) : (
         <ul className="lista-cartoes" aria-label="Avisos">
           {avisos.map((a) => (
@@ -40,9 +40,6 @@ export function Avisos() {
           ))}
         </ul>
       )}
-      <p className="suave" style={{ fontSize: '0.85rem' }}>
-        Para receber também no celular, ative as notificações em <Link to="/configuracoes#notificacoes">Configurações</Link>.
-      </p>
     </main>
   );
 }

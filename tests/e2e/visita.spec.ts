@@ -1,5 +1,16 @@
 import { expect, test, type Page } from '@playwright/test';
 
+/** Botão + da propriedade: abre a lista e escolhe a ação. */
+async function adicionar(page: Page, acao: 'Nova visita' | 'Novo animal') {
+  await page.getByRole('button', { name: 'Adicionar', exact: true }).click();
+  await page.getByRole('menuitem', { name: acao }).click();
+}
+async function novoAnimal(page: Page, identificacao: string) {
+  await adicionar(page, 'Novo animal');
+  await page.getByLabel('Identificação (número ou nome)').fill(identificacao);
+  await page.getByRole('button', { name: 'Salvar animal' }).click();
+}
+
 async function controladoPeloSW(page: Page) {
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
@@ -19,13 +30,12 @@ test('visita preenchida sem internet sobrevive a fechar e reabrir o app', async 
   await page.getByLabel('Nome da propriedade').fill('Sítio Teste');
   await page.getByRole('button', { name: 'Salvar propriedade' }).click();
   await page.getByRole('link', { name: /Sítio Teste/ }).click();
-  await page.getByLabel('Identificação (número ou nome)').fill('064');
-  await page.getByRole('button', { name: 'Adicionar animal' }).click();
+  await novoAnimal(page, '064');
   await expect(page.getByRole('list', { name: 'Animais' }).getByText('064')).toBeVisible();
 
   // Chega na fazenda: sem sinal.
   await context.setOffline(true);
-  await page.getByRole('button', { name: 'Nova visita' }).click();
+  await adicionar(page, 'Nova visita');
   await page.getByRole('button', { name: 'Adicionar animal à visita' }).click();
   await page.getByRole('button', { name: '064', exact: true }).click();
 

@@ -1,3 +1,4 @@
+import { Fab } from '../../components/Fab';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -56,7 +57,7 @@ export function Laboratorio() {
       <section className="cartao" aria-labelledby="t-cultura">
         <h2 id="t-cultura">Cultura por tubo</h2>
         <p className="suave">Toque no resultado de cada tubo. Mais de um agente pode ser marcado. Os nomes aparecem no laudo exatamente como na lista.</p>
-        {tubos?.length === 0 && <p>Nenhum tubo coletado nesta visita.</p>}
+        {tubos?.length === 0 && <p className="suave vazio">Nenhum tubo nesta visita.</p>}
         <ul className="lista-cartoes" style={{ gridTemplateColumns: '1fr' }}>
           {tubos?.map((t) => (
             <li key={t.id} className="cartao" data-testid={`tubo-${t.numero_tubo}`}>
@@ -154,11 +155,8 @@ export function Laboratorio() {
           </article>
         ))}
 
-        {novoAb === null ? (
-          <button type="button" className="botao botao-primario" style={{ marginTop: 12 }} disabled={!tubos?.length} onClick={() => { setNovoAb([]); setRotuloAb(''); }}>
-            Novo antibiograma
-          </button>
-        ) : (
+        {!abs?.length && novoAb === null && <p className="suave vazio">Nenhum antibiograma ainda.</p>}
+        {novoAb === null ? null : (
           <div className="cartao form" style={{ marginTop: 12 }}>
             <p style={{ margin: 0, fontWeight: 600 }}>Tubo(s) do antibiograma (mais de um = pool)</p>
             <div className="escolha" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))' }}>
@@ -202,6 +200,17 @@ export function Laboratorio() {
           </div>
         )}
       </section>
+      {!!tubos?.length && (
+        <Fab
+          rotulo={novoAb === null ? 'Novo antibiograma' : 'Cancelar novo antibiograma'}
+          aberto={novoAb !== null}
+          aoTocar={() => {
+            if (novoAb !== null) return setNovoAb(null);
+            setNovoAb([]);
+            setRotuloAb('');
+          }}
+        />
+      )}
     </main>
   );
 }

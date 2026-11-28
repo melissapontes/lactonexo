@@ -31,8 +31,8 @@ export function BarraStatus() {
           <Logo tamanho={28} />
           <span>{APP.nome}</span>
         </Link>
-        <IndicadorSalvo />
         <div className="barra-acoes">
+          <IndicadorSalvo />
           <Link to="/avisos" className={`barra-avisos ${avisos?.length ? 'tem' : ''}`} data-testid="avisos" aria-label={avisos?.length ? `${avisos.length} avisos` : 'Avisos'}>
             <IconeSino />
             {avisos?.length ? <span className="contador">{avisos.length}</span> : null}

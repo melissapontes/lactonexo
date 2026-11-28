@@ -1,0 +1,62 @@
+.fab-caixa {
+  position: fixed;
+  z-index: 40;
+  right: calc(16px + env(safe-area-inset-right));
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.fab {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--grad-marca, var(--cor-marca));
+  color: var(--cor-marca-texto);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
+  cursor: pointer;
+}
+.fab svg {
+  transition: transform 0.15s ease;
+}
+.fab-xis svg {
+  transform: rotate(45deg);
+}
+.fab:active {
+  filter: brightness(0.92);
+}
+.fab-lista {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.fab-item {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  font: inherit;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.15);
+  cursor: pointer;
+}
+/* Espaço no fim da página para o botão não cobrir o último item; o convite de instalar sobe acima dele. */
+body:has(.fab-caixa) .conteudo {
+  padding-bottom: 104px;
+}
+body:has(.fab-caixa) .toasts {
+  bottom: calc(88px + env(safe-area-inset-bottom));
+}
+@media (prefers-reduced-motion: reduce) {
+  .fab svg {
+    transition: none;
+  }
+}

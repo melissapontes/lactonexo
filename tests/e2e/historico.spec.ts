@@ -1,8 +1,21 @@
 import { expect, test, type Page } from '@playwright/test';
 
+/** Botão + da propriedade: abre a lista e escolhe a ação. */
+async function adicionar(page: Page, acao: 'Nova visita' | 'Novo animal') {
+  await page.getByRole('button', { name: 'Adicionar', exact: true }).click();
+  await page.getByRole('menuitem', { name: acao }).click();
+}
+async function novoAnimal(page: Page, identificacao: string) {
+  await adicionar(page, 'Novo animal');
+  await page.getByLabel('Identificação (número ou nome)').fill(identificacao);
+  await page.getByRole('button', { name: 'Salvar animal' }).click();
+}
+
 async function visitaCom(page: Page, data: string, cmtAE: string) {
+  await adicionar(page, 'Nova visita');
+  await page.getByRole('button', { name: 'Data e instituição' }).click();
   await page.getByLabel('Data da visita').fill(data);
-  await page.getByRole('button', { name: 'Nova visita' }).click();
+  await page.getByLabel('Data da visita').blur();
   await page.getByRole('button', { name: 'Adicionar animal à visita' }).click();
   await page.getByRole('button', { name: 'Mimosa', exact: true }).click();
   await page.getByTestId('tamis').getByRole('radio', { name: 'Negativo' }).click();
@@ -18,8 +31,7 @@ test('duas visitas com CMT alto geram sugestão; o vet registra a conduta e vê 
   await page.getByRole('button', { name: 'Salvar propriedade' }).click();
   await page.getByRole('link', { name: /Sítio Histórico/ }).click();
   const urlProp = page.url();
-  await page.getByLabel('Identificação (número ou nome)').fill('Mimosa');
-  await page.getByRole('button', { name: 'Adicionar animal' }).click();
+  await novoAnimal(page, 'Mimosa');
 
   await visitaCom(page, '2026-09-01', '++');
   await page.goto(urlProp);
