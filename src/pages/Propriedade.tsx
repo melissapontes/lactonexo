@@ -42,6 +42,7 @@ export function Propriedade() {
   const categorias = useLiveQuery(() => itensCatalogo('categoria'), []);
   const [novoAnimalAberto, setNovoAnimalAberto] = useState(false);
   const [aviso, setAviso] = useState('');
+  const [animalSalvo, setAnimalSalvo] = useState('');
   const [editar, setEditar] = useState(false);
   const online = useOnline();
   const baixadoEm = useLiveQuery(() => lerMeta<string>(`baixado:${id}`), [id]);
@@ -64,12 +65,14 @@ export function Propriedade() {
     const identificacao = String(f.get('identificacao') ?? '').trim();
     if (!identificacao) return;
     if (animais?.some((a) => a.identificacao === identificacao)) {
-      setAviso(`Já existe um animal "${identificacao}" nesta propriedade.`);
+      setAnimalSalvo('');
+      setAviso(`"${identificacao}" já está na lista de animais desta propriedade.`);
       return;
     }
     await salvar('animal', { propriedade_id: id, identificacao, categoria: String(f.get('categoria') || '') || undefined, ativo: true });
     form.reset();
     setAviso('');
+    setAnimalSalvo(`"${identificacao}" salvo no aparelho.`);
     (form.elements.namedItem('identificacao') as HTMLInputElement).focus();
   }
 
@@ -162,6 +165,7 @@ export function Propriedade() {
             rotulo: 'Novo animal',
             aoTocar: () => {
               setNovoAnimalAberto(true);
+              setAnimalSalvo('');
               requestAnimationFrame(() => document.getElementById('t-animais')?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
             },
           },
@@ -191,6 +195,9 @@ export function Propriedade() {
         )}
         {animais?.length === 0 && !novoAnimalAberto && <p className="suave vazio">Nenhum animal ainda.</p>}
         {aviso && <p className="aviso aviso-alerta" role="alert">{aviso}</p>}
+        {animalSalvo && novoAnimalAberto && !aviso && (
+          <p className="suave" role="status" data-testid="animal-salvo" style={{ margin: '8px 0 0', color: 'var(--cor-ok)' }}>✓ {animalSalvo}</p>
+        )}
         <ul className="lista-cartoes" style={{ marginTop: 12 }} aria-label="Animais">
           {animais?.map((a) => (
             <li key={a.id} className="cartao">

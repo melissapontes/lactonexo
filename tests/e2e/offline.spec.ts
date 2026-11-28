@@ -36,6 +36,16 @@ test('abre e salva sem internet, mantém pendências após fechar e reabrir', as
   await page.getByRole('button', { name: 'Salvar propriedade' }).click();
   await expect(page.getByTestId('pendentes')).toHaveText('2 alterações pendentes');
 
+  // Animal novo sem internet: confirmação visível logo abaixo do botão.
+  await page.getByRole('link', { name: /Sítio Boa Vista/ }).click();
+  await page.getByRole('button', { name: 'Adicionar', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Novo animal' }).click();
+  await page.getByLabel('Identificação (número ou nome)').fill('Mimosa');
+  await page.getByRole('button', { name: 'Salvar animal' }).click();
+  await expect(page.getByTestId('animal-salvo')).toHaveText('✓ "Mimosa" salvo no aparelho.');
+  await expect(page.getByRole('list', { name: 'Animais' })).toContainText('Mimosa');
+  await expect(page.getByTestId('pendentes')).toHaveText('3 alterações pendentes');
+
   // Fecha o app e reabre ainda sem internet.
   await page.close();
   const reaberta = await context.newPage();
@@ -43,7 +53,7 @@ test('abre e salva sem internet, mantém pendências após fechar e reabrir', as
   await expect(reaberta.getByTestId('estado-rede')).toHaveText('Offline');
   await expect(reaberta.getByText('Logradouro')).toBeVisible();
   await expect(reaberta.getByText('Sítio Boa Vista')).toBeVisible();
-  await expect(reaberta.getByTestId('pendentes')).toHaveText('2 alterações pendentes');
+  await expect(reaberta.getByTestId('pendentes')).toHaveText('3 alterações pendentes');
 
   // Rota profunda também abre offline (fallback de navegação do service worker).
   await reaberta.goto('/configuracoes');
@@ -52,7 +62,7 @@ test('abre e salva sem internet, mantém pendências após fechar e reabrir', as
   // Volta a rede: sem servidor configurado ainda (etapa c), os dados continuam guardados no aparelho.
   await context.setOffline(false);
   await expect(reaberta.getByTestId('estado-rede')).toHaveText('Online');
-  await expect(reaberta.getByTestId('pendentes')).toHaveText('2 alterações pendentes');
+  await expect(reaberta.getByTestId('pendentes')).toHaveText('3 alterações pendentes');
   void browserName;
   await context.close();
 });
